@@ -95,13 +95,26 @@ C++ 极其不推荐使用 goto 跳回代码前面。原因如下：
   - **解决**：函数使用时不需要写输入参数的类型
 - **坑**:把VS code里终端的命令行和git bash命令行弄混
   - **解决**：VS code编译：（所有cpp文件）g++ *.cpp -o main   运行.exe:.\main.exe
-  git bash中
+  git bash中 git add .(在已关联到remote eg.origin仓库时使用)
+- **坑**:终端路径有问题
+  - **解决**：使用cd等方式切换到正常路径
+- **坑**:cin>>int(类型)，如果输入非int类型会出bug
+  - **解决**：输入防护——eg.
+      if (!(cin >> input1)) {//尝试把用户输入读进 input1，如果失败，就进入 if。
+        cout << "Invalid input. Please enter a number." << endl;
+        cin.clear();              // 清除 cin 的错误状态
+        cin.ignore(10000, '\n');  // 丢掉这一行错误输入,此行代码的意思是：从输入缓冲区里丢弃（忽略）最多 10000 个字符，或者直到遇到换行符 \n 为止（换行符也会被丢弃）。
+        continue;
+      }
+      cin.clear() 其实可以带参数，默认不带参数时相当于 cin.clear(std::ios::goodbit)，即恢复所有正常状态。
+- **坑**:极其关键的误区：clear() 不是清空缓冲区！cin.clear() 只改状态。导致出错的那个字母 a，依然还在输入缓冲区里。如果只调用 clear()，下一次 cin >> 读到的还是那个字母 a，又会立刻崩溃。
+  - **解决**：这就是为什么，它必须和 cin.ignore() 配合使用（“黄金搭档”）：
+
 ## 今日学到的命令
 - `git push`：
 - `git remote -v`：远程仓库
 
 ## 待办
-- 学习制作项目
+- 学习制作项目（ongoing）
 - 学习类与对象
 - 学习用CSV 格式记录
-- 学习stringstream

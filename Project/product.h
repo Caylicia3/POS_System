@@ -6,4 +6,8 @@ struct Product{
    double price;
 };
 
-std::vector<Product> CreateProduct();
+std::vector<Product> CreateProduct(const std::string& filename);
+
+void ShowProductInfo(const std::string& barcode);
+
+void Case1();

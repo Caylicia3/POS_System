@@ -6,10 +6,10 @@
 #include<vector>
 using namespace std;
 
-vector<Product> CreateProduct(){
+vector<Product> CreateProduct(const string& filename){
     vector<Product> products;
     string line;
-    ifstream file("product.csv");
+    ifstream file(filename);
     if (!file) {
         cout << "无法打开文件\n";
         return products;
@@ -29,4 +29,41 @@ vector<Product> CreateProduct(){
     file.close();
     return products;
 }
-    
+   
+void ShowProductInfo(const string& barcode){
+    if(barcode=="001"){
+        cout << "Product Name: cola" << endl;
+        cout << "Barcode: 001" << endl;
+        cout << "Price: 3.50" << endl;
+    } else if(barcode=="002"){
+        cout << "Product Name: lollipop" << endl;
+        cout << "Barcode: 002" << endl;
+        cout << "Price: 0.50" << endl;
+    } else if(barcode=="003"){
+        cout << "Product Name: noodles" << endl;
+        cout << "Barcode: 003" << endl;
+        cout << "Price: 6.00" << endl;
+    } else if(barcode=="prices"){
+        cout << "Product Name: cola" << endl;
+        cout << "Barcode: 001" << endl;
+        cout << "Price: 3.50" << endl << endl;
+        cout << "Product Name: lollipop" << endl;
+        cout << "Barcode: 002" << endl;
+        cout << "Price: 0.50" << endl << endl;
+        cout << "Product Name: noodles" << endl;
+        cout << "Barcode: 003" << endl;
+        cout << "Price: 6.00" << endl;
+    }else {
+        cout << "ERROR: code not found" << endl;
+    }
+}
+
+void Case1(){
+    cout << "Please enter the barcode of the product you want to check: " << endl;
+    cout << "(Enter 'exit' or 'quit' to quit)" << endl;
+    cout << "If you want to check all products, please enter 'prices'" << endl;
+    string input2;
+    while(cin >> input2 && input2 != "exit" && input2 != "quit"){
+            ShowProductInfo(input2);
+        }
+}

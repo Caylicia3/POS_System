@@ -118,6 +118,18 @@ C++ 极其不推荐使用 goto 跳回代码前面。原因如下：
              方案二：如果想读取一整行（包含空格）应该用 getline：
              eg.    string input3;
                     getline(cin, input3); 
+- **坑**：git log指令终端分页器（less）的显示造成“重复”干扰。git log 默认进 less，会重绘屏幕 → 复制出来看着像重复
+  - **解决**:简单说：git log 是“完整档案”，git log --oneline 是“精简目录”。
+  常用参数组合
+命令	作用
+git log	完整信息，进分页器
+git log --oneline	一行一个，简洁
+git log --oneline -5	只看最近 5 条
+git log --oneline --graph	一行一个 + 分支树状图
+git log --oneline --all	显示所有分支的提交
+git log -p	显示每个提交的具体代码改动
+git log --stat	显示每个提交改了哪些文件、增删多少行
+git log --author="Caylicia"	只看某个作者的提交
 ## 今日学到的命令
 - `git push`：
 - `git remote -v`：远程仓库

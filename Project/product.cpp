@@ -112,16 +112,27 @@ void Checkout(string input2, vector<Product>& products){
             input2 = input2.substr(1);//去掉负号(截取负号后面的部分)
             for(Product& product : products){
                 if(product.barcode == input2){
-                    product.quantity--;
-                    cout << product.name << " " << product.price << "*" << product.quantity << "=" << product.price * product.quantity << endl;
-                    break;
+                    if(product.quantity == 0){
+                        cout << "No items to remove for this product." << endl;
+                        return;
+                    }
+                    else{
+                        product.quantity--;
+                        cout << product.name << " " << product.price << "*" << product.quantity << "=" << product.price * product.quantity << endl;
+                        break;
+                    }
                 }
             }
         }else if(input2 == "print"){
+            bool checkEmpty = true;
             for(Product& product : products){
                 if(product.quantity > 0){
                     cout << product.name << " " << product.price << "*" << product.quantity << "=" << product.price * product.quantity << endl;
+                    checkEmpty = false;
                 }
+            }
+            if(checkEmpty){
+                cout << "Cart is empty." << endl;
             }
         }else if(input2 == "drop"){
             for(Product& product : products){

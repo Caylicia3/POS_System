@@ -79,10 +79,8 @@ void Case2(vector<Product>& products){
     cout << "Please enter your command: ";
     string input2;
     while(cin >> input2 && input2 != "exit" && input2 != "quit"){//每一个输入都循环一次
-        Checkout(input2, products);    
-                    
-    }
-                
+        Checkout(input2, products);             
+    }    
 };
 
 void Checkout(string input2, vector<Product>& products){
@@ -94,11 +92,18 @@ void Checkout(string input2, vector<Product>& products){
             break;
         }
     }
-    if(found){//每次只读入一个商品，但打印目前购物车里所有商品的信息
-        cout << "----- Current order -----:" << endl;
-        for(Product& product : products){
-            if(product.quantity > 0){
-                cout << product.name << " " << product.price << "*" << product.quantity << "=" << product.price * product.quantity << endl;
+    if(found){//一个一个读入，打印目前购物车里所有商品的信息
+        char input3;
+        cin.get(input3);
+        if(input3 == ' '){//如果输入的下一个字符是空格，就继续读入下一个条形码
+            return;
+        }
+        else{
+            cout << "----- Current order -----:" << endl;
+            for(Product& product : products){
+                if(product.quantity > 0){
+                    cout << product.name << " " << product.price << "*" << product.quantity << "=" << product.price * product.quantity << endl;
+                }
             }
         }
     }

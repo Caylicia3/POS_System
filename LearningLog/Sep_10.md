@@ -42,6 +42,7 @@ const std::string& line	不拷贝	不能改原串	可以
 所以 const std::string& 是只读、高效、安全的参数写法。
 - 使用for循环遍历vector动态数组
 - 学习用 <iomanip> 头文件里的流操纵符（I/O Manipulators）控制输出
+- 在 C++ 中，void 函数直接用 return; 就可以提前结束，不需要返回值：
 ## 遇到的坑 & 解决方案
 - **坑**：注释里误写了‘\’导致程序无法正常运行
   - **解决**：
@@ -109,7 +110,14 @@ C++ 极其不推荐使用 goto 跳回代码前面。原因如下：
       cin.clear() 其实可以带参数，默认不带参数时相当于 cin.clear(std::ios::goodbit)，即恢复所有正常状态。
 - **坑**:极其关键的误区：clear() 不是清空缓冲区！cin.clear() 只改状态。导致出错的那个字母 a，依然还在输入缓冲区里。如果只调用 clear()，下一次 cin >> 读到的还是那个字母 a，又会立刻崩溃。
   - **解决**：这就是为什么，它必须和 cin.ignore() 配合使用（“黄金搭档”）：
-
+- **坑**：怎么检验输入的是不是空格
+  - **解决**:不能用 cin >> ch 来判断空格，因为 cin >> ch 默认会跳过空格、制表符、换行等空白字符。
+但可以用 cin.get(ch) 读入包括空格在内的字符。
+- **坑**：cin.get() 只能接收 char 或 char*（字符数组），它不认识 std::string，所以不能用它来读取string类型
+  - **解决**:方案一：如果只想读一个字符改成用 char 类型接收
+             方案二：如果想读取一整行（包含空格）应该用 getline：
+             eg.    string input3;
+                    getline(cin, input3); 
 ## 今日学到的命令
 - `git push`：
 - `git remote -v`：远程仓库

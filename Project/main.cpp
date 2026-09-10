@@ -13,10 +13,13 @@ int main(){
     cin>>input1;
     switch(input1){
         case 1:{
-               Case1();
-               break;
+            Case1();
+            break;
           }
-     
+        case 2:{
+            Case2(products);
+            break;
+        }
         default:
             cout << "Invalid input" << endl;
         }

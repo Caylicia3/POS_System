@@ -6,10 +6,12 @@ void ShowMenu(int date,int num){
     cout << "7-Eleven Convenience Store POS Command-Line Interactive System" << endl;
     cout << "==============================================================" << endl;
     cout << "Day:" << date << "---" << "Current Receipt Number" << num << endl << endl;
-    cout << "Exit the Menu--Please enter 0" << endl;
-    cout << "Show Product Information--Please enter 1" << endl;
-    cout << "Checkout--Please enter 2" << endl;
+    cout << "Exit the Menu -- Please enter 0" << endl;
+    cout << "Show Product Information -- Please enter 1" << endl;
+    cout << "Checkout -- Please enter 2" << endl;
     cout << "Date Change (+1 Date) -- Please enter 3" << endl;
+    cout << "View All Sales Records and Total Revenue -- Please enter 4" << endl;
+    cout << "Clear All Sales Records -- Please enter 5" << endl;
 }
 
 void clearScreen() {

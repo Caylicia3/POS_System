@@ -3,7 +3,7 @@
 #include <ctime>
 
 using namespace std;
-/*
+
 int main() {//time testing
 
     auto now = chrono::system_clock::now();
@@ -13,4 +13,3 @@ int main() {//time testing
 
     return 0;
 }
-*/

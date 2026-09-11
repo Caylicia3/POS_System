@@ -15,7 +15,7 @@ vector<Product> CreateProduct(const string& filename){
     string line;
     ifstream file(filename);
     if (!file) {
-        cout << "无法打开文件\n";
+        cout << "Failed to open file\n";
         return products;
      }
     getline(file,line);//跳过第一行表头
@@ -35,6 +35,7 @@ vector<Product> CreateProduct(const string& filename){
 }
    
 void ShowProductInfo(const string& barcode){
+    /*
     if(barcode=="001"){
         cout << "Product Name: cola" << endl;
         cout << "Barcode: 001" << endl;
@@ -57,10 +58,55 @@ void ShowProductInfo(const string& barcode){
         cout << "Product Name: noodles" << endl;
         cout << "Barcode: 003" << endl;
         cout << "Price: 6.00" << endl;
+    }*/
+    string line1, line2, line3;
+    bool valid;
+    if(Judge(line1, line2, line3, barcode, valid)){
+        cout << "Product Name: " << line1 << endl;
+        cout << "Barcode: " << line2 << endl;
+        cout << "Price: " << line3 << endl;
+    }else if(barcode=="prices"){
+        string line;
+        ifstream file("product.csv");
+        getline(file,line);
+        while(getline(file,line)){
+            stringstream ss(line);
+            getline(ss,line,',');
+            cout << "Product Name: " << line << "   ";
+            getline(ss,line,',');
+            cout << "Barcode: " << line << "   ";
+            ss >> line;
+            cout << "Price: " << line << endl;
+        }
     }else {
-        cout << "ERROR: code not found" << endl;
+        if(valid){
+            cout << "Error 0: code not found" << endl;
+        }
     }
 }
+
+bool Judge(string& line1, string& line2, string& line3, const string& barcode, bool& valid){
+    ifstream file("product.csv");
+    if (!file) {
+        cout << "Failed to open file" << endl;
+        valid = 0;
+        return false;
+     }
+    getline(file,line1);//去掉表头
+    while(getline(file,line1)){
+        stringstream ss(line1);//创建一个 std::stringstream 对象 ss，并用字符串 line 的内容初始化它。
+        getline(ss,line1,',');
+        getline(ss,line2,',');
+        ss >> line3;
+        if(barcode == line2){
+            return true;
+        }
+    }
+    valid = 1;
+    return false;
+}
+
+
 
 void Case1(){
     cout << "Please enter the barcode of the product you want to check: " << endl;
@@ -70,6 +116,9 @@ void Case1(){
     while(cin >> input2 && input2 != "exit" && input2 != "quit"){
             ShowProductInfo(input2);
         }
+    cout << "Returning to main menu in 2 seconds..." << endl;
+    this_thread::sleep_for(chrono::seconds(2));
+    clearScreen(); 
 }
 
 void Case2(vector<Product>& products,int date,int& num){
@@ -134,6 +183,13 @@ void Checkout(string input2, vector<Product>& products, int date, int& num){
                             return;
                         }
                         else{
+                        for(Product& product : products){
+                            if(product.quantity > 0){
+                                break;
+                            }
+                            cout << "Cart is empty." << endl;
+                            return;
+                        }
                         cout << "----- Current order -----:" << endl;
                         for(Product& product : products){
                             if(product.quantity > 0){
@@ -146,6 +202,7 @@ void Checkout(string input2, vector<Product>& products, int date, int& num){
             }
     }else if(input2 == "print"){
         bool checkEmpty = true;
+        cout << "----- Current order -----:" << endl;
         for(Product& product : products){
             if(product.quantity > 0){
                 cout << product.name << " " << product.price << "*" << product.quantity << "=" << product.price * product.quantity << endl;
@@ -174,6 +231,7 @@ void Checkout(string input2, vector<Product>& products, int date, int& num){
         for(Product& product : products){
             product.quantity = 0;
         }
+        cout << "Enter 'exit' or 'quit' to quit." << endl;
     }else{
         cout << "Error 2:Invalid input" << endl; 
     }

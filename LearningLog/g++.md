@@ -1,0 +1,1 @@
+- g++ -std=c++17 -Wall -Wextra -g *.cpp -o POS.exe

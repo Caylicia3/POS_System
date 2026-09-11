@@ -12,8 +12,29 @@ file.is_open()：仅仅检查这个流对象是否成功关联到了一个实际
 - auto now = ...
 auto 是 C++ 的自动类型推导。编译器会根据右边表达式的类型，自动决定 now 是什么类型。
 now 的类型一旦被 auto 推导出来，就固定了，之后不能再改成别的类型。
-- 
-
+-  C++中，主要是在函数参数场景下比较：
+ 写法	                是否拷贝	   能否修改原对象	                能绑定什么	                                  常见用途
+const string& barcode	不拷贝	        不能	                      非 const 左值、const 左值、临时对象/字面量	只读输入参数，最常用
+string& barcode	        不拷贝	         能	                          只能绑定非 const 左值	                       输出参数、输入输出参数
+const string barcode	会拷贝一份副本	不能改这个副本，也改不了原对象	 任何能构造出 string 的实参	                  需要只读副本，但通常不推荐用于大对象
+- (重复学习)std::getline(file, line);
+会从 file 中不断读取字符，直到遇到换行符 '\n'。
+读到的内容存进 line。
+换行符 '\n' 会被读走，但不会存入 line。
+如果文件里一行是 hello world，那么 line 就是 "hello world"。
+空格不会被当作分隔符，所以整行内容都会读进来。
+- （重复学习）getline(ss, line, 's'); 是 std::getline 的三参数版本，用法是：
+从输入流 ss 中读取字符，直到遇到分隔符 's' 为止，把读取到的内容（不包括 's'）存入字符串 line，并把这个 's' 从流中消耗掉。
+- 读取输入的前五个字符:substr()   input.substr(开始位置, 读取长度)
+- 读取所有内容，包括空格 getline(cin, input);（一排）
+- 怎样去掉字符串的前几位。
+std::string s = "sales 2026-09-11";
+s.erase(0, 6);   // 从下标 0 开始，删除 6 个字符
+// s 变成 "2026-09-11"
+第一个参数 0：起始位置。
+第二个参数 6：删除的字符个数。
+如果字符串长度不足 6，erase 会把能删的都删掉，不会抛异常。
+所以这样写很安全：
 ## 遇到的坑 & 解决方案
 - **坑**：普通打开可能会覆盖原来的内容：如果不加 ios::app，默认是 ios::out 模式，每次打开文件都会清空原有内容。
   - **解决**：追加写入 ofstream file("sales.csv", ios::app);file << "你要写入的内容";新的内容就会写到文件末尾，而不会把之前的交易记录覆盖掉。完整写法是：std::ios::app
@@ -78,9 +99,30 @@ void Record(int date, int& num, const std::vector<Product>& products, double tot
 这样 sale.h 就不需要包含 product.h 了，只要在 sale.cpp 里包含 product.h 来实际操作 Product 对象即可。这能大幅减少编译时间。
 - **坑**：该放在循环外的东西放在了循环里
   - **解决**：
+- **坑**：程序重启以后怎么知道是第几单/流水号
+  - **解决**：方法一：程序启动时读取 CSV，找到今天最大的 serial（流水号num）。详见（自定义函数）int GetTodayNum(int date)
+  方法二：全局流水号
+- **坑**：string转int型
+  - **解决**：stoi  int a = stoi(string b)
+s  +  to + i
+│     │    │
+string  to  int
+常用类型转换string → int
+stoi()
+
+string → double
+stod()
+
+int → string
+to_string()
+- **坑**：C++ 是每个 .cpp 文件单独编译的。一定要确认.cpp中有没有相应的头文件（包括函数原则声明）
+  - **解决**：
+- **坑**：if 语句的括号很容易写错
+  - **解决**：
+- **坑**：输入时/n在缓冲区，被getiline读到了。
+  - **解决**：
 ## 今日学到的命令
-- `git `：
-- `git `：
+- g++ -std=c++17 -Wall -Wextra -g *.cpp -o POS.exe
 
 ## 待办
 - 思路：想要写入记录，首先要记录日期（自定义day）、时间（取系统时间）、

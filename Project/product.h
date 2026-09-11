@@ -23,3 +23,5 @@ void Checkout(std::string input2, std::vector<Product>& products, int date, int&
    int record_quantity = 0; 
 };
 */
+
+bool Judge(std::string& line1, std::string& line2, std::string& line3, const std::string& barcode, bool& valid);

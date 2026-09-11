@@ -7,12 +7,13 @@
 #include <iomanip>//输入输出格式控制，用于系统时间显示格式
 #include "product.h"
 #include <vector>
+#include <string>
 using namespace std;
 
 void Record(int date,int& num,const vector<Product>& products,double total){
     ofstream file("sale.csv",ios::app);
     if (!file.is_open()) {
-    cout << "Error:Record failed" << endl;
+    cout << "Error 4:Record failed" << endl;
     return;
     }
     //记录day
@@ -23,11 +24,11 @@ void Record(int date,int& num,const vector<Product>& products,double total){
     //记录当下时间
     auto now = chrono::system_clock::now();
     time_t currentTime = chrono::system_clock::to_time_t(now);
-    file << "," << put_time(localtime(&currentTime), "%H:%M:%S");//写入数据
+    file << "," << put_time(localtime(&currentTime), "%H:%M:%S") << ",";//写入数据
     //记录商品明细
     for(const Product& product : products){
         if(product.quantity > 0){
-            file << "," << product.name << " " << product.price << "*" << product.quantity << "=" << product.price * product.quantity;
+            file << "  " << product.name << " " << product.price << "*" << product.quantity << "=" << product.price * product.quantity;
         }
     }
     //记录总金额
@@ -36,7 +37,29 @@ void Record(int date,int& num,const vector<Product>& products,double total){
     file.close();
 }
 
-void Case3(int& date){
+int GetTodayNum(int date){
+    ifstream file("sale.csv");
+    int max_num = 0;
+    string all_date;//std::getline 的第二个参数必须是 std::string 类型，不能是 int。
+    string num;
+    string line;
+    getline(file, line);// 跳过第一行表头
+    while(getline(file,line)){
+        stringstream ss(line);
+        getline(ss,all_date,',');
+        getline(ss,num,',');
+        if (date == stoi(all_date))
+        {
+            if (stoi(num) > max_num)
+            {
+                max_num = stoi(num);
+            }
+        }
+    }
+    return max_num+1;
+}
+
+void Case3(int& date,int& num){
     /*cout << "Please enter the new day number: " << endl;
     if (!(cin >> day)) {
         cout << "Invalid input. Please enter a number.Continuing in 5 seconds." << endl;
@@ -51,9 +74,177 @@ void Case3(int& date){
     this_thread::sleep_for(chrono::seconds(5));
     clearScreen();
     */
-    date++;
+    /*date++;
+    num = GetTodayNum(date);
     cout << "Today is : Day" << date << endl;
-    cout << "Refreshing in 2 seconds..." <<endl;
+    */
+    cout << "Enter 'newday' to start a new day (Date+1)" << endl;
+    cout << "Enter 'exit' or 'quit' to quit." << endl;
+    string input;
+    while(cin >> input && input != "quit" && input != "exit"){
+        if(input == "newday"){
+            date++;
+            num = GetTodayNum(date);
+            cout << "Today is : Day" << date << endl;
+            cout << "Refreshing in 2 seconds..." <<endl;
+            this_thread::sleep_for(chrono::seconds(2));
+            break;
+            clearScreen();
+        }
+        else{
+            cout << "Error 7:Invalid input" << endl;
+        }
+    }
+    cout << "Returning to main menu in 2 seconds..." << endl;
     this_thread::sleep_for(chrono::seconds(2));
-    clearScreen();
+    clearScreen(); 
+}
+
+int GetToday(){
+    ifstream file("sale.csv");
+    int max_date = 1;
+    string date;//std::getline 的第二个参数必须是 std::string 类型，不能是 int。
+    string line;
+    getline(file, line);// 跳过第一行表头
+    while(getline(file,line)){
+        stringstream ss(line);
+        getline(ss,date,',');
+        if (stoi(date) > max_date)
+            {
+                max_date = stoi(date);
+            }
+        }
+    return max_date;
+}
+
+void Case4(int day){
+    cout << "View All Sales Records and Total Revenue" << endl;
+    //Sales Records
+    //Total Sales
+    cout << "Enter 'sales[day]' to View All Sales Records and Total Revenue (eg.'sales 1')" << endl;
+    cout << "If the day parameter is omitted, it defaults to today." << endl;
+    cout << "Enter 'exit' or 'quit' to quit." << endl;
+    cout << "Enter 'all' to display all records." << endl;
+    string input;
+    while(getline(cin, input) && input != "exit" && input != "quit"){
+        if(input.size()>=5 && input.substr(0,5)=="sales"){//注意越界风险，input长度可能小5
+            if(input.size()==5){
+                ifstream file("sale.csv");
+                string date;
+                getline(file,date);
+                cout << "Day: " << day << endl;
+                cout << "------------------------" << endl;
+                double daily_sale = 0;
+                while(getline(file,date)){
+                    string  No, Time, Items, Ament;//把 No, Time, Items, Amcnt 都定义在 while (getline(...)) 循环里面，每次读取新行时它们都是全新的，不会被旧数据污染。
+                    stringstream ss(date);
+                    getline(ss,date,',');//这会消耗 ss 中已经读过的部分
+                    getline(ss,No,',');
+                    getline(ss,Time,',');
+                    getline(ss,Items,',');
+                    ss >> Ament;
+                    if(stoi(date) == day){
+                        cout << "No." << No << " Time:" << Time << " Items:" << Items << " Ament:" << Ament << endl;
+                        daily_sale+=stod(Ament);
+                    }
+                }
+                cout << "------------------------" << endl;
+                cout << "Daily: " << daily_sale << endl;
+                file.close();
+            }else{
+                input.erase(0,5);
+                if(input[0] == ' '){
+                    input.erase(0,1);
+                    if(input.empty()){
+                        cout << "Error 8:Invalid input" << endl;
+                    }else{
+                        day = stoi(input);
+                        ifstream file("sale.csv");
+                        string date, No, Time, Items, Ament;
+                        getline(file,date);
+                        cout << "Day: " << day << endl;
+                        cout << "------------------------" << endl;
+                        double daily_sale = 0;
+                        while(getline(file,date)){
+                            stringstream ss(date);
+                            getline(ss,date,',');//这会消耗 ss 中已经读过的部分
+                            getline(ss,No,',');
+                            getline(ss,Time,',');
+                            getline(ss,Items,',');
+                            ss >> Ament;
+                            if(stoi(date) == day){//注意：这里的date和day和函数外的略有区别，因为变量太多不好命名
+                                cout << "No." << No << " Time:" << Time << " Items:" << Items << " Ament:" << Ament << endl;
+                                daily_sale+=stod(Ament);
+                            }
+                        }
+                        cout << "------------------------" << endl;
+                        cout << "Daily: " << daily_sale << endl;
+                    }
+                }else{
+                    cout << "Error 6:Invalid input" << endl;
+                }
+            }
+        }
+        else if(input == "all"){
+            ifstream file("sale.csv");
+            string date1, date2 = " ", No, Time, Items, Ament;//date1是该行的date,date2是用来判断是否是同一天的（date2为上一个date的值）
+            getline(file, date1);//除表头
+            double daily_sale = 0;
+            if(file.peek() == EOF){//看看文件当前位置后面还有没有东西。
+                cout << "No history found." << endl;
+            }
+            else{
+                while(getline(file, date1)){
+                    stringstream ss(date1);
+                    getline(ss,date1,',');//这会消耗 ss 中已经读过的部分
+                    getline(ss,No,',');
+                    getline(ss,Time,',');
+                    getline(ss,Items,',');
+                    ss >> Ament;
+                    if(date1 != date2){
+                        if(date2 != " "){//避免最开始就打印结算部分
+                            cout << "------------------------" << endl;
+                            cout << "Daily: " << daily_sale << endl << endl;
+                            daily_sale = 0;
+                        }
+                        cout << "Day: " << date1 << endl;
+                        cout << "------------------------" << endl;
+                    }//注意：total应该在每一天的末尾，也就是第二天的前面。
+                    cout << "No." << No << " Time:" << Time << " Items:" << Items << " Ament:" << Ament << endl;
+                    daily_sale+=stod(Ament);//string to double
+                    date2 = date1;
+                }
+                if(date2 != " "){//注意：最后一次的结算还未打印循环就结束了
+                    cout << "------------------------" << endl;
+                    cout << "Daily: " << daily_sale << endl;
+                }
+                file.close();
+            }
+        }else{
+            cout << "Error 5:Invalid input" << endl;
+        }
+    }
+    cout << "Returning to main menu in 2 seconds..." << endl;
+    this_thread::sleep_for(chrono::seconds(2));
+    clearScreen(); 
+}
+
+void Case5(){
+    cout << "Are you sure you want to clear all history? This action cannot be undone." << endl;
+    cout << "Press 1 to confirm clearing all history. Type 'quit' or 'exit' to cancel. " << endl;
+    string input;
+    while(cin >> input && input != "quit" && input != "exit"){
+        if(input == "1"){
+            ofstream file("sale.csv");
+            file << "Date,number_of_sales/num,system_time,Receipt Items,total_sales_amount" << endl;
+            file.close();
+            break;
+        }
+        else{
+            cout << "Error 8:Invalid input" << endl;
+        }
+    }
+    cout << "Returning to main menu in 2 seconds..." << endl;
+    this_thread::sleep_for(chrono::seconds(2));
+    clearScreen(); 
 }

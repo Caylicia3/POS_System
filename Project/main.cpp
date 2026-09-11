@@ -11,7 +11,7 @@ using namespace std;
 
 int main(){
     vector<Product> products = CreateProduct("product.csv");
-    int input1 , date = 1 , num = 1;
+    int input1 , date = GetToday() , num = GetTodayNum(date);
     do{
         ShowMenu(date,num);
         if (!(cin >> input1)) {//尝试把用户输入读进 input1，如果失败，就进入 if。
@@ -30,6 +30,9 @@ int main(){
                 return 0;
             }
             case 1:{
+                cout << "Redirecting in 2 seconds..." <<endl;
+                this_thread::sleep_for(chrono::seconds(2));
+                clearScreen();
                 Case1();
                 break;
             }
@@ -39,12 +42,30 @@ int main(){
                 clearScreen();
                 Case2(products,date,num);
                 break;
-           }
-           case 3:{
-                Case3(date);
+            }
+            case 3:{
+                cout << "Redirecting in 2 seconds..." <<endl;
+                this_thread::sleep_for(chrono::seconds(2));
+                clearScreen();
+                Case3(date,num);
                 break;
-           }
-           default:
+            }
+            case 4:{
+                cout << "Redirecting in 2 seconds..." <<endl;
+                this_thread::sleep_for(chrono::seconds(2));
+                clearScreen();
+                cin.ignore(10000, '\n');//去掉缓冲区剩下的 \n，不然会影响Case4里的getline
+                Case4(date);
+                break;
+            }
+            case 5:{
+                cout << "Redirecting in 2 seconds..." <<endl;
+                this_thread::sleep_for(chrono::seconds(2));
+                clearScreen();
+                Case5();
+                break;
+            }
+            default:
                 cout << "Error 1:Invalid input" << endl;
             }
     }while(1);

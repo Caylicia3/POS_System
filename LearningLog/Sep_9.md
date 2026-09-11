@@ -3,7 +3,7 @@
 ## 今日学习内容
 - 学习了 Git 指令
 - 学会了用 SourceTree 连接远程仓库
-- 正在学习CSV 格式的含义和使用CSV 格式记录
+- 正在学习CSV 格式的含义和读取CSV格式文件（ifstream）
 - 注意区别
 git merge main：在 testing 分支上执行，把 main 合并进 testing，main 不变。
 git merge testing：在 main 分支上执行，把 testing 合并进 main，testing 不变。

@@ -138,3 +138,4 @@ git log --author="Caylicia"	只看某个作者的提交
 - 学习制作项目（ongoing）
 - 学习类与对象
 - 学习用CSV 格式记录
+- level 1.3内容拆解

@@ -1,9 +1,12 @@
-//Product cola={"cola","001",3.50};Product lollipop={"lollipop","002",0.50};Product noodles={"noodles","003",6.00};
-#include<iostream>
-#include<sstream>
-#include<fstream>
-#include"product.h"
-#include<vector>
+#include <iostream>
+#include <sstream>
+#include <fstream>
+#include "product.h"
+#include <vector>
+#include "sale.h"
+#include <thread> // 暂停时间
+#include <chrono>
+#include "menu.h"
 //#include <iomanip>
 using namespace std;
 
@@ -69,30 +72,33 @@ void Case1(){
         }
 }
 
-void Case2(vector<Product>& products){
+void Case2(vector<Product>& products,int date,int& num){
     cout << "Enter barcodes to add items to the order. Each barcode adds 1 item (separated by spaces)." << endl;
     cout << "Enter 'exit' or 'quit' to quit." << endl;
-    cout << "Enter barcode with a '-' prefix to decrease quantity by 1 (e.g., '-001')." << endl;
+    cout << "Enter barcode with a '-' prefix to decrease quantity by 1 (e.g., '-001').Multiple entries allowed. Separate with spaces." << endl;
     cout << "Enter 'print' to print the current receipt (items, quantities, prices, and total)." << endl;
     cout << "Enter 'drop' to clear the order and restart." << endl;
     cout << "Enter 'checkout' to finalize the order, print the receipt, and clear the order." << endl;
     cout << "Please enter your command: ";
     string input2;
     while(cin >> input2 && input2 != "exit" && input2 != "quit"){//每一个输入都循环一次
-        Checkout(input2, products);             
-    }    
+        Checkout(input2, products, date, num);             
+    }   
+    cout << "Returning to main menu in 2 seconds..." << endl;
+    this_thread::sleep_for(chrono::seconds(2));
+    clearScreen(); 
 };
 
-void Checkout(string input2, vector<Product>& products){
-    bool found = false;
+void Checkout(string input2, vector<Product>& products, int date, int& num){
+    bool found1 = false, found2 = false;
     for(Product& product : products){
         if(product.barcode == input2){
             product.quantity++;
-            found = true;
+            found1 = true;
             break;
         }
     }
-    if(found){//一个一个读入，打印目前购物车里所有商品的信息
+    if(found1){//一个一个读入，打印目前购物车里所有商品的信息
         char input3;
         cin.get(input3);
         if(input3 == ' '){//如果输入的下一个字符是空格，就继续读入下一个条形码
@@ -107,53 +113,68 @@ void Checkout(string input2, vector<Product>& products){
             }
         }
     }
-    else{
-        if(input2[0] == '-'){//检查字符串第一个字符是不是负号
+    else if(input2[0] == '-'){//检查字符串第一个字符是不是负号
             input2 = input2.substr(1);//去掉负号(截取负号后面的部分)
             for(Product& product : products){
                 if(product.barcode == input2){
+                    found2 = true;
                     if(product.quantity == 0){
                         cout << "No items to remove for this product." << endl;
-                        return;
                     }
                     else{
                         product.quantity--;
-                        cout << product.name << " " << product.price << "*" << product.quantity << "=" << product.price * product.quantity << endl;
-                        break;
                     }
+                    break;
                 }
             }
-        }else if(input2 == "print"){
-            bool checkEmpty = true;
-            for(Product& product : products){
-                if(product.quantity > 0){
-                    cout << product.name << " " << product.price << "*" << product.quantity << "=" << product.price * product.quantity << endl;
-                    checkEmpty = false;
-                }
+            if(found2){//一个一个读入，打印目前购物车里所有商品的信息
+                        char input4;
+                        cin.get(input4);
+                        if(input4 == ' '){//如果输入的下一个字符是空格，就继续读入下一个条形码
+                            return;
+                        }
+                        else{
+                        cout << "----- Current order -----:" << endl;
+                        for(Product& product : products){
+                            if(product.quantity > 0){
+                                cout << product.name << " " << product.price << "*" << product.quantity << "=" << product.price * product.quantity << endl;
+                            }
+                        }
+                    }
+            }else{
+                cout << "Error 3:Invalid input" << endl; 
             }
-            if(checkEmpty){
-                cout << "Cart is empty." << endl;
+    }else if(input2 == "print"){
+        bool checkEmpty = true;
+        for(Product& product : products){
+            if(product.quantity > 0){
+                cout << product.name << " " << product.price << "*" << product.quantity << "=" << product.price * product.quantity << endl;
+                checkEmpty = false;
             }
-        }else if(input2 == "drop"){
-            for(Product& product : products){
-                product.quantity = 0;
-            }
-            cout << "Order cleared." << endl;
-        }else if(input2 == "checkout"){
-            double total = 0;
-            cout << "----- Final Receipt -----:" << endl;
-            for(Product& product : products){
-                if(product.quantity > 0){
-                    cout << product.name << " " << product.price << "*" << product.quantity << "=" << product.price * product.quantity << endl;
-                    total += product.price * product.quantity;
-                }
-            }
-            cout << "Total: " << total << endl;
-            for(Product& product : products){
-                product.quantity = 0;
-            }
-        }else{
-            cout << "Invalid input" << endl; 
         }
+        if(checkEmpty){
+            cout << "Cart is empty." << endl;
+        }
+    }else if(input2 == "drop"){
+        for(Product& product : products){
+            product.quantity = 0;
+        }
+        cout << "Order cleared." << endl;
+    }else if(input2 == "checkout"){
+        double total = 0;
+        cout << "----- Final Receipt -----:" << endl;
+        for(Product& product : products){
+            if(product.quantity > 0){
+                cout << product.name << " " << product.price << "*" << product.quantity << "=" << product.price * product.quantity << endl;
+                total += product.price * product.quantity;
+            }
+           }
+        cout << "Total: " << total << endl;
+        Record(date,num,products,total); 
+        for(Product& product : products){
+            product.quantity = 0;
+        }
+    }else{
+        cout << "Error 2:Invalid input" << endl; 
     }
 }

@@ -8,6 +8,7 @@
 #include "product.h"
 #include <vector>
 #include <string>
+
 using namespace std;
 
 void Record(int date,int& num,const vector<Product>& products,double total){
@@ -95,9 +96,7 @@ void Case3(int& date,int& num){
             cout << "Error 7:Invalid input" << endl;
         }
     }
-    cout << "Returning to main menu in 2 seconds..." << endl;
-    this_thread::sleep_for(chrono::seconds(2));
-    clearScreen(); 
+    ReturnMenu();
 }
 
 int GetToday(){
@@ -156,7 +155,7 @@ void Case4(int day){
                 if(input[0] == ' '){
                     input.erase(0,1);
                     if(input.empty()){
-                        cout << "Error 8:Invalid input" << endl;
+                        cout << "Error 9:Invalid input" << endl;
                     }else{
                         day = stoi(input);
                         ifstream file("sale.csv");
@@ -224,9 +223,7 @@ void Case4(int day){
             cout << "Error 5:Invalid input" << endl;
         }
     }
-    cout << "Returning to main menu in 2 seconds..." << endl;
-    this_thread::sleep_for(chrono::seconds(2));
-    clearScreen(); 
+    ReturnMenu();
 }
 
 void Case5(){
@@ -244,7 +241,5 @@ void Case5(){
             cout << "Error 8:Invalid input" << endl;
         }
     }
-    cout << "Returning to main menu in 2 seconds..." << endl;
-    this_thread::sleep_for(chrono::seconds(2));
-    clearScreen(); 
+    ReturnMenu();
 }

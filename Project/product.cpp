@@ -116,9 +116,7 @@ void Case1(){
     while(cin >> input2 && input2 != "exit" && input2 != "quit"){
             ShowProductInfo(input2);
         }
-    cout << "Returning to main menu in 2 seconds..." << endl;
-    this_thread::sleep_for(chrono::seconds(2));
-    clearScreen(); 
+    ReturnMenu();
 }
 
 void Case2(vector<Product>& products,int date,int& num){
@@ -133,9 +131,7 @@ void Case2(vector<Product>& products,int date,int& num){
     while(cin >> input2 && input2 != "exit" && input2 != "quit"){//每一个输入都循环一次
         Checkout(input2, products, date, num);             
     }   
-    cout << "Returning to main menu in 2 seconds..." << endl;
-    this_thread::sleep_for(chrono::seconds(2));
-    clearScreen(); 
+    ReturnMenu();
 };
 
 void Checkout(string input2, vector<Product>& products, int date, int& num){

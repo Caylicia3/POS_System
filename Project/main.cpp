@@ -6,6 +6,7 @@
 #include <thread> // 暂停时间
 #include <chrono> // 暂停时间
 #include "sale.h"
+#include "admin.h"
 
 using namespace std;
 
@@ -24,45 +25,38 @@ int main(){
           }
         switch(input1){
             case 0:{
-                cout << "Exiting in 5 seconds." << endl;
-                this_thread::sleep_for(chrono::seconds(5));
-                clearScreen();
+                Exit();
                 return 0;
             }
             case 1:{
-                cout << "Redirecting in 2 seconds..." <<endl;
-                this_thread::sleep_for(chrono::seconds(2));
-                clearScreen();
+                Redirect();
                 Case1();
                 break;
             }
             case 2:{
-                cout << "Redirecting in 2 seconds..." <<endl;
-                this_thread::sleep_for(chrono::seconds(2));
-                clearScreen();
+                Redirect();
                 Case2(products,date,num);
                 break;
             }
             case 3:{
-                cout << "Redirecting in 2 seconds..." <<endl;
-                this_thread::sleep_for(chrono::seconds(2));
-                clearScreen();
+                Redirect();
                 Case3(date,num);
                 break;
             }
             case 4:{
-                cout << "Redirecting in 2 seconds..." <<endl;
-                this_thread::sleep_for(chrono::seconds(2));
-                clearScreen();
-                cin.ignore(10000, '\n');//去掉缓冲区剩下的 \n，不然会影响Case4里的getline
+                Redirect();
+                cin.ignore(10000, '\n');//去掉缓冲区剩下的 \n，不然会影响Case4里的getline，不然会自动出现Error5。
                 Case4(date);
                 break;
             }
             case 5:{
-                cout << "Redirecting in 2 seconds..." <<endl;
-                this_thread::sleep_for(chrono::seconds(2));
-                clearScreen();
+                Redirect();
                 Case5();
+                break;
+            }
+            case 6:{
+                Redirect();
+                Case6();
                 break;
             }
             default:

@@ -5,7 +5,7 @@ struct Product{
    std::string name;
    std::string barcode;
    double price;
-   int quantity = 0; 
+   int quantity = 0; //指购物车中的物品数量，不记录进product.csv，每次购物结束后会被清空
 };
 
 std::vector<Product> CreateProduct(const std::string& filename);

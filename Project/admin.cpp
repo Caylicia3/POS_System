@@ -1,15 +1,22 @@
 #include <iostream>
 #include <fstream>
 #include "menu.h"
+#include "product.h"
+#include <cctype>
+#include <string>
+#include "admin.h"
 //#include <sstream>
 
 using namespace std;
 
 void Case6(){
+    cin.ignore(1000,'\n');
     cout << "  Enter admin password to enter administrator mode." << endl;
+    cout << "          Enter 'exit' or 'quit' to quit." << endl;
     cout << "---------------------------------------------------------" << endl;
-    cout << "Password:" << endl;
+    //cout << "Password:" << endl;
     if(VerifyPassword()){
+        cout << "Correct!" << endl;
         Redirect();
         AdminMenu();
         ReturnMenu();
@@ -20,7 +27,6 @@ void Case6(){
 }
 
 bool VerifyPassword(){//添加实时显示密码的功能？
-    cout << "Enter 'exit' or 'quit' to quit." << endl;
     int chance = 3;
     string password, line;
     ifstream file("password.csv");
@@ -66,18 +72,25 @@ void AdminMenu(){//const int& date, const int& num
         file.close();
         cout << "---------------------------------------------------------" << endl;
         cout << "Enter 'back' to exit Admin & return to Cashier." << endl;
-        cout << "Enter '1' to change password." << endl;
-        cout << "Enter '2' to " << endl;
+        cout << "Enter 'admin' to change password." << endl;//AdminCase1
+        cout << "Enter 'setprice' to Change Item Price" << endl;
         cin >> input;//记得检查第一次是不是"back“//检查非法输入
+        cin.ignore(1000,'\n');
             if(input == "back"){
                 break;
             }
-            else if(input == "1"){
+            else if(input == "admin"){
                 Redirect();
                 AdminCase1();//尽量不要嵌套递归函数(AdminMenu里套AdminMenu，而采用while循环持续等待管理员输入。)
             }
-            else if(input == "2"){
-
+            else if(input == "setprice"){
+                Redirect();
+                AdminCase2();
+            }
+            else{
+                cout << "Error 15:Invalid input" << endl;
+                cout << "Please Try Again."  << endl;
+                clearScreen();
             }
         }
     }
@@ -111,5 +124,90 @@ void AdminCase1(){
             cout << "Password change failed." << endl;
             Redirect();
         }
+    }
+}
+
+void AdminCase2(){//setprice
+    string input;
+    cout << "Enter Product Barcode to Change Price (eg.001) (Numbers only)."<< endl;
+    cout << "Enter 'back' to Return." << endl;
+    vector<Product> products = CreateProduct("product.csv");//想要检验并找到条形码对应的商品，直接用之前写的函数，不再手写代码去从.csv文件里找 //注意：这部分本来在循环内，但是建议改到循环外，避免程序重复
+    while(cin >> input && input != "back"){
+        if(NumCheck(input)){//检查是否是数字
+            cout << "The Barcode Is : " << input << endl;
+            bool judge = false;//判断是否找到条形码
+            for(const auto& product : products){
+                if(product.barcode == input){
+                    cout << "Product Name: " << product.name << endl;
+                    cout << "Barcode: " << product.barcode << endl;
+                    cout << "OldPrice: " << product.price << endl;
+                    judge = true;
+                    break;//可以提前结束循环，因为条形码唯一
+                }
+            }
+            if(!judge){
+                cout << "Error 11:Cant't Find the Product!" << endl;
+            }
+            else{//找到商品了
+                cout << "Please Enter the New Price." << endl;
+                cout << "Note : Commas(',') are not allowed.Numbers only." << endl;
+                string New;
+                cin >> New;//不会输入空白
+                if(New.find(',') == string::npos){//未发现逗号
+                    if(PriceCheck(New)){//检测价格是否合理
+                        for(auto& product : products){
+                            if(product.barcode == input){
+                                product.price = stod(New);//注意：类型转换——price是double  New是string  PriceCheck函数并未改变New的类型
+                                break;
+                            }
+                        }
+                        RecreateProduct(products);//把更改后的商品信息填回去
+                        cout << "Product Price Updated Successfully." << endl;
+                        Redirect();
+                        cout << "Enter Barcode to Continue Editing (Numbers only)." << endl;
+                        cout << "Enter 'back' to Return." << endl;
+                        }else{
+                            cout << "Error 14: Price Must Be a Number.!" << endl;
+                    }
+                }
+                else{
+                    cout << "Error 13 : Commas(',') are not allowed!" << endl;
+                }
+            }
+        }
+        else{
+            cout << "Error 2:Invalid input!" << endl; 
+            cout << "Try Again." << endl;
+        }
+    }
+    Redirect();
+}
+
+bool NumCheck(string input){
+    if(input.empty())
+        return false;
+    for(char c : input){
+        if(!isdigit(c))
+            return false;
+    }
+    return true;
+}
+
+void RecreateProduct(const vector<Product>& products){//回填商品信息
+    ofstream file("product.csv");
+    file << "name,barcode,price\n";//不要忘记写表头
+    for(const Product& product : products){
+        file << product.name << "," << product.barcode << "," << product.price << endl;
+    }
+}
+
+bool PriceCheck(string input){
+    try{
+        size_t pos;
+        stod(input, &pos);
+        return pos == input.size();
+    }
+    catch(...){
+        return false;
     }
 }

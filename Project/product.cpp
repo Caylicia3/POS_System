@@ -28,7 +28,7 @@ vector<Product> CreateProduct(const string& filename){
         ss >> price;
         Product product{name, barcode, price};//注意：这个 product 每次循环结束就没了，需要用vector存储起来
         products.push_back(product);
-     }
+    }
      
     file.close();
     return products;

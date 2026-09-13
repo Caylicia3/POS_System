@@ -8,6 +8,7 @@
 git merge main：在 testing 分支上执行，把 main 合并进 testing，main 不变。
 git merge testing：在 main 分支上执行，把 testing 合并进 main，testing 不变。
 所以你现在在 testing 分支执行 git merge main，你的 main 还有，而且完全不受影响。
+- CSV是一种结构化文本格式，相比普通txt，它通过分隔符表示字段，方便程序解析，也方便人工查看和修改。（对于这个小型POS系统，不需要数据库，CSV足够。）
 
 ## 遇到的坑 & 解决方案
 - **坑**：写完代码没保存直接编译运行了

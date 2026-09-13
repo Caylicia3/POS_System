@@ -1,26 +1,33 @@
 # POS System
 
-A simple command-line Point of Sale (POS) system written in C++.
+A command-line Point of Sale (POS) system implemented in C++17.
 
-This project is a C++ learning project focused on practicing fundamental programming concepts, file I/O, data persistence, error handling, and Git/GitHub workflows.
+This project is a C++ application developed to practice software engineering concepts, including modular design, file management, data persistence, and command-line application development.
 
 ## Features
 
-* Product lookup by barcode
-* View all product information
-* Add products to the shopping cart
-* Remove products from the shopping cart
-* View the current order
-* Clear the current order
-* Checkout and receipt generation
-* Persistent sales records
-* Daily sales statistics
-* View all sales records
-* Total revenue calculation
-* Change the current business day
-* Clear all sales history
-* CSV-based data storage
-* Windows executable release
+### Product Management
+- Product lookup by barcode
+- Display all product information
+- CSV-based product data storage
+- Administrator price management
+
+### Transaction Management
+- Shopping cart operations
+- Add/remove products
+- Receipt generation
+- Checkout processing
+
+### Sales Management
+- Persistent transaction records
+- Daily sales statistics
+- Historical sales query
+- Business day management
+
+### System Features
+- Command-line interface
+- Error handling
+- Windows executable release
 
 ## Demo
 

@@ -12,3 +12,5 @@ void Redirect();
 void Exit();
 
 void ReturnMenu();
+
+void Refresh();

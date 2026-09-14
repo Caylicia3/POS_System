@@ -16,7 +16,7 @@ bool PriceCheck(string input);
 
 void AdminCase3();
 
-bool DuplicateCheck(string add, const string& data_member);
+bool DuplicateCheck(const string& add, const string& data_member);
 
 void Check();
 
@@ -24,4 +24,8 @@ void BarcodeCheck();
 
 void NameCheck(const string& Barcode);
 
-void PriceCheck(const string& Barcode, const string& Name);
+void NewPriceCheck(const string& Barcode, const string& Name);
+
+void AdminCase4();
+
+bool PasswordDuplicateCheck(const string& input);

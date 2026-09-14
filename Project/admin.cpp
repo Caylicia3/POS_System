@@ -52,7 +52,6 @@ bool VerifyPassword(){//添加实时显示密码的功能？
             break;
         }else{
             cout << "Please enter the correct password." << endl;
-            cout << "Entry cleared.Try again." << endl;//清空输入
         }
     }
     file.close();
@@ -75,6 +74,7 @@ void AdminMenu(){//const int& date, const int& num
         cout << "Enter 'admin' to change password." << endl;//AdminCase1
         cout << "Enter 'setprice' to Change Item Price." << endl;
         cout << "Enter 'itemadd' to Add New Products." << endl;
+        cout << "Enter 'itemdel' to Delete Products." << endl;
         cin >> input;//记得检查第一次是不是"back“//检查非法输入
         cin.ignore(1000,'\n');
             if(input == "back"){
@@ -88,11 +88,12 @@ void AdminMenu(){//const int& date, const int& num
             }else if(input == "itemadd"){
                 Redirect();
                 AdminCase3();
-
+            }else if(input == "itemdel"){
+                Redirect();
+                AdminCase4();
             }else{
-                cout << "Error 15:Invalid input" << endl;
-                cout << "Please Try Again."  << endl;
-                clearScreen();
+                cout << "Error 15:Invalid input. Please Try Again." << endl;
+                Refresh();
             }
         }
     }
@@ -107,26 +108,34 @@ void AdminCase1(){
         oldfile.close();
         修改逻辑后无需再单独储存旧密码
         */
-        cout << "Please Enter a New Password." << endl;
+        cout << "Please Enter a New Password." << endl;//现阶段认为"back"可以是密码
         string input1, input2;
-        getline(cin,input1);
-        cout << "Re-enter password to confirm:" << endl;
-        if(getline(cin, input2) && input2 == input1){//再次确认密码//原来是在这个if之前打开"pass.csv"文件，但是ofstream newfile("password.csv");默认模式是：ios::out 它会打开文件并且截断(truncate)原文件。只要打开，原密码就已经没了。
-            cout << "Password changed successfully." << endl;
-            ofstream newfile("password.csv");//如果 password.csv 不存在，ofstream 会自动帮你创建这个文件。如果存在，默认情况下它会清空（覆盖）原有内容（这也是为什么在需要追加内容时需要配合 ios::app 使用）。
-            if (!newfile.is_open()) {
-                cout << "Error 10:Failed to open file 'admin.csv'." << endl;
-                return;
+        //getline(cin,input1);//坑：如果VerifyPassword() 里面使用：cin >> password;那么直接：getline(cin,input1);会吃掉换行。此处不用getline原因：可能会产生密码为空格的情况
+        cin >> input1;// \n不会成为密码
+        if(!PasswordDuplicateCheck(input1)){
+            cout << "New Password Cannot Be the Same As the Old One." << endl;
+        }else{
+            cout << "Re-enter password to confirm:" << endl;
+            cin.ignore(1000,'\n');
+            if(getline(cin, input2) && input2 == input1){//再次确认密码//原来是在这个if之前打开"pass.csv"文件，但是ofstream newfile("password.csv");默认模式是：ios::out 它会打开文件并且截断(truncate)原文件。只要打开，原密码就已经没了。
+                ofstream newfile("password.csv");//如果 password.csv 不存在，ofstream 会自动帮你创建这个文件。如果存在，默认情况下它会清空（覆盖）原有内容（这也是为什么在需要追加内容时需要配合 ios::app 使用）。
+                if (!newfile.is_open()) {
+                    cout << "Error 10:Failed to open file 'password.csv'." << endl;
+                    Redirect();
+                    return;
+                }
+                newfile << input1;
+                newfile.close();
+                cout << "Password changed successfully." << endl;
+            }else{
+                cout << "Password Change Failed." << endl;
             }
-            newfile << input1;
-            newfile.close();
-            Redirect();
-        }
-        else{
-            cout << "Password change failed." << endl;
-            Redirect();
         }
     }
+    else{
+        cout << "Password Is Incorrect." << endl;
+    }
+    Redirect();
 }
 
 void AdminCase2(){//setprice
@@ -222,20 +231,16 @@ void AdminCase3(){
     Redirect();
 }
 
-bool DuplicateCheck(string add, const string& data_member){//条形码和名称都需要查重//注意：使用时data_member只能是name或barcode
+bool DuplicateCheck(const string& add, const string& data_member){//条形码和名称都需要查重//注意：使用时data_member只能是name或barcode
     vector<Product> products = CreateProduct("product.csv");
-        for(const Product& product : products){
-            //if(product.data_member == add);不能这样写，因为Product没有data_member这个成员
-            if(data_member == "barcode" && product.barcode == add){
-                return false;
-            }
-            else if(data_member == "name" && product.name == add){
-                return false;
-            }
-            else{
-                return true;
-            }
+    for(const Product& product : products){
+        //if(product.data_member == add);不能这样写，因为Product没有data_member这个成员
+        if(data_member == "barcode" && product.barcode == add){
+            return false;
+        }else if(data_member == "name" && product.name == add){
+            return false;
         }
+    }
     return true;
 }
 
@@ -269,7 +274,7 @@ void NameCheck(const string& Barcode){
         if(Name.find(',') == string::npos){//逗号检测，比较简单就没写成函数
             if(DuplicateCheck(Name, "name")){
                 cout << "Valid Input "<< endl;
-                PriceCheck(Barcode, Name);
+                NewPriceCheck(Barcode, Name);
                 break;
             }else{
                 cout << "Error 20: Name Already Exists.Please Try Again.";
@@ -283,7 +288,7 @@ void NameCheck(const string& Barcode){
     return;
 }
 
-void PriceCheck(const string& Barcode, const string& Name){
+void NewPriceCheck(const string& Barcode, const string& Name){
     cout << "Enter the Price of the New Product.Numbers Only(eg.3.50)." << endl;
     cout << "Enter 'back' to Exit." << endl;
     string Price;
@@ -306,4 +311,46 @@ void PriceCheck(const string& Barcode, const string& Name){
         }
     }
     return;
+}
+
+void AdminCase4(){
+    cout << "Enter 'back' to Exit." << endl;
+    cout << "Enter Barcode to Delete a Product." << endl;
+    string Barcode;
+    while(cin >> Barcode && Barcode != "back"){
+        vector<Product> products = CreateProduct("product.csv");
+        bool Valid = false;
+        for(const auto& product : products){//无需检验是不是数字，因为如果不是数字根本不会匹配得上
+            if(product.barcode == Barcode){
+                Valid = true;
+            }
+        }
+        if(Valid){
+            ofstream file("product.csv");
+            file << "name" << ',' << "barcode" << ',' << "price" << endl;
+            for(const auto& product : products){//
+                if(product.barcode != Barcode){
+                    file << product.name << ',' << product.barcode << ',' << product.price << endl;
+                }
+            }
+            cout << "Product Deleted Successfully." << endl << endl;
+            cout << "Enter 'back' to Exit." << endl;
+            cout << "Enter Barcode to Delete a Product." << endl;
+        }else{
+            cout << "Error 15:Invalid input. Product Not Found." << endl;
+            cout << "Please Try Again." << endl;
+        }
+    }
+    Redirect();
+}
+
+bool PasswordDuplicateCheck(const string& input){
+    ifstream oldfile("password.csv");//储存原密码line //新增检验：密码查重
+    string line;
+    getline(oldfile,line);
+    oldfile.close();
+    if(input == line){
+        return false;
+    }
+    return true;
 }

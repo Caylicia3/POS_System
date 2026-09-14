@@ -42,3 +42,9 @@ void ReturnMenu(){
     this_thread::sleep_for(chrono::seconds(2));
     clearScreen(); 
 }
+
+void Refresh(){
+    cout << "Refresh In 2 Seconds..." <<endl;
+    this_thread::sleep_for(chrono::seconds(2));
+    clearScreen();
+}

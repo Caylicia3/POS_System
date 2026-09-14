@@ -1,518 +1,407 @@
-# POS System
+# POS_System
 
-A command-line Point of Sale (POS) system implemented in C++17.
+A lightweight command-line Point of Sale (POS) system implemented in C++.
 
-This project is a C++ application developed to practice software engineering concepts, including modular design, file management, data persistence, and command-line application development.
+This project simulates a basic retail checkout workflow, including product management, checkout, sales recording, and administrator operations.
+
+The project is developed with standard C++ features and uses CSV files for persistent data storage.
+
+---
+
+## Project Overview
+
+POS_System is a command-line interactive application designed to simulate a small retail management system.
+
+The system provides:
+
+- Product information management
+- Product searching
+- Shopping cart and checkout functions
+- Sales record management
+- Administrator mode
+- Persistent data storage through CSV files
+
+The main purpose of this project is to practice C++ programming, file operations, modular program design, and basic software engineering concepts.
+
+---
 
 ## Features
 
 ### Product Management
-- Product lookup by barcode
-- Display all product information
-- CSV-based product data storage
-- Administrator price management
 
-### Transaction Management
-- Shopping cart operations
-- Add/remove products
-- Receipt generation
-- Checkout processing
-
-### Sales Management
-- Persistent transaction records
-- Daily sales statistics
-- Historical sales query
-- Business day management
-
-### System Features
-- Command-line interface
-- Error handling
-- Windows executable release
-
-## Demo
-
-The program is a command-line interactive POS system.
-
-```text
-Start POS System
-      │
-      ▼
-  Main Menu
-      │
-      ├── 1. Show Product Information
-      │
-      ├── 2. Checkout
-      │
-      ├── 3. Change Date
-      │
-      ├── 4. View Sales Records
-      │
-      ├── 5. Clear Sales Records
-      │
-      └── 0. Exit
-```
-
-## Main Menu
-
-When the program starts, the following options are available:
-
-| Input | Function                             |
-| ----- | ------------------------------------ |
-| `0`   | Exit the program                     |
-| `1`   | Show product information             |
-| `2`   | Checkout                             |
-| `3`   | Change the current business day      |
-| `4`   | View sales records and total revenue |
-| `5`   | Clear all sales records              |
-
-## Usage
-
-### 1. Show Product Information
-
-Select:
-
-```text
-1
-```
-
-You can then enter a product barcode to view its information.
-
-For example:
-
-```text
-001
-```
-
-The program displays:
-
-```text
-Product Name
-Barcode
-Price
-```
-
-To display all available products:
-
-```text
-prices
-```
-
-To return to the main menu:
-
-```text
-exit
-```
-
-or:
-
-```text
-quit
-```
-
----
-
-### 2. Checkout
-
-Select:
-
-```text
-2
-```
-
-The checkout interface accepts product barcodes.
-
-Each barcode adds **one item** to the current order.
-
-For example:
-
-```text
-001
-001
-002
-```
-
-This adds two units of product `001` and one unit of product `002`.
-
-#### Remove an item
-
-Add `-` before the barcode:
-
-```text
--001
-```
-
-This decreases the quantity of product `001` by one.
-
-#### Print the current order
-
-```text
-print
-```
-
-This displays the current items, quantities, prices, and total amount.
-
-#### Clear the current order
-
-```text
-drop
-```
-
-This clears the current order without recording a sale.
-
-#### Complete the transaction
-
-```text
-checkout
-```
-
-The program will:
-
-1. Display the final receipt.
-2. Calculate the total amount.
-3. Save the transaction to `sale.csv`.
-4. Clear the current order.
-
-#### Exit checkout
-
-```text
-exit
-```
-
-or:
-
-```text
-quit
-```
-
----
-
-### 3. Change the Business Day
-
-Select:
-
-```text
-3
-```
-
-Then enter:
-
-```text
-newday
-```
-
-The current day will increase by one.
-
-The receipt number for the new day is calculated from the existing sales records.
-
-To return to the main menu:
-
-```text
-exit
-```
-
-or:
-
-```text
-quit
-```
-
----
-
-### 4. View Sales Records
-
-Select:
-
-```text
-4
-```
-
-#### View today's sales
-
-Enter:
-
-```text
-sales
-```
-
-The program displays the sales records for the current day and calculates the daily revenue.
-
-#### View sales from a specific day
-
-For example:
-
-```text
-sales 1
-```
-
-This displays the sales records and total revenue for Day 1.
-
-#### View all sales records
-
-```text
-all
-```
-
-The program displays the sales history grouped by day and calculates the total revenue for each day.
-
-To return to the main menu:
-
-```text
-exit
-```
-
-or:
-
-```text
-quit
-```
-
----
-
-### 5. Clear Sales History
-
-Select:
-
-```text
-5
-```
-
-The program will ask for confirmation.
-
-Enter:
-
-```text
-1
-```
-
-to clear all sales records.
-
-This operation cannot be undone.
-
-You can also enter:
-
-```text
-exit
-```
-
-or:
-
-```text
-quit
-```
-
-to cancel.
-
-> **Warning:** Clearing sales history overwrites `sale.csv` and removes the existing sales records.
-
-## Data Persistence
-
-The project uses CSV files for persistent data storage.
-
-### `product.csv`
-
-Stores product information:
-
-```text
-Product Name
-Barcode
-Price
-```
+The system stores product information in CSV format.
 
 Example:
 
-```text
-cola,001,3.5
-lollipop,002,0.5
-noodles,003,6
+```csv
+name,barcode,price
+cola,001,3.50
+lollipop,002,0.50
+noodles,003,6.00
 ```
 
-### `sale.csv`
+Supported operations:
 
-Stores transaction information including:
+- Load product information from CSV files
+- Search products by barcode
+- Display all products
+- Add new products
+- Delete products
+- Modify product prices
 
-* Business day
-* Receipt number
-* Transaction time
-* Purchased items
-* Total transaction amount
+---
 
-Sales records are written to `sale.csv` after a successful checkout.
+### Checkout System
 
-This allows sales information to remain available after the program is restarted.
+The cashier module supports interactive order management.
+
+Features:
+
+- Add products by entering product barcodes
+- Remove products using `-barcode`
+- View current order information
+- Clear current order
+- Complete checkout and generate transaction records
+
+Example commands:
+
+Add product:
+
+```
+001
+```
+
+Remove product:
+
+```
+-001
+```
+
+View current order:
+
+```
+print
+```
+
+Clear current order:
+
+```
+drop
+```
+
+Complete checkout:
+
+```
+checkout
+```
+
+During checkout, the system will:
+
+1. Generate the final receipt
+2. Calculate the total price
+3. Save the transaction record
+4. Reset the shopping cart
+
+---
+
+### Sales Record System
+
+Completed transactions are stored in:
+
+```
+sale.csv
+```
+
+Each transaction contains:
+
+- Date
+- Receipt number
+- Transaction time
+- Purchased items
+- Total amount
+
+Example:
+
+```csv
+Date,number_of_sales/num,system_time,Receipt Items,total_sales_amount
+1,1,12:30:15,cola 3.5*2=7,7
+```
+
+Supported commands:
+
+View today's sales:
+
+```
+sales
+```
+
+View sales of a specific day:
+
+```
+sales 3
+```
+
+View all sales history:
+
+```
+all
+```
+
+The system also supports clearing historical sales records after confirmation.
+
+---
+
+### Administrator Mode
+
+Administrator mode provides additional management functions.
+
+Functions include:
+
+- Administrator authentication
+- Change administrator configuration
+- Modify product price
+- Add products
+- Delete products
+
+When adding new products, the system checks:
+
+- Barcode validity
+- Duplicate barcode
+- Duplicate product name
+- Price validity
+
+When deleting products, the system reloads product information and rewrites the CSV file.
+
+---
 
 ## Project Structure
 
-```text
-POS_System/
+```
+POS_System
 │
-├── Project/
-│   ├── main.cpp
-│   ├── menu.cpp
-│   ├── menu.h
-│   ├── product.cpp
-│   ├── product.h
-│   ├── sale.cpp
-│   ├── sale.h
-│   ├── product.csv
-│   └── sale.csv
+├── main.cpp
 │
-├── LearningLog/
-│   └── ...
+├── menu.cpp
+├── menu.h
 │
-└── README.md
+├── product.cpp
+├── product.h
+│
+├── sale.cpp
+├── sale.h
+│
+├── admin.cpp
+├── admin.h
+│
+├── product.csv
+├── sale.csv
+└── password.csv
 ```
 
-### Main Components
+---
 
-| File                      | Description                                            |
-| ------------------------- | ------------------------------------------------------ |
-| `main.cpp`                | Program entry point and main control flow              |
-| `menu.cpp / menu.h`       | Command-line menu and screen management                |
-| `product.cpp / product.h` | Product loading, lookup, and checkout operations       |
-| `sale.cpp / sale.h`       | Sales recording, sales statistics, and date management |
-| `product.csv`             | Product data                                           |
-| `sale.csv`                | Persistent sales records                               |
-| `LearningLog/`            | Development and learning notes                         |
+## Implementation Details
 
-## Requirements
+### CSV Data Storage
 
-### Released Version
+This project uses CSV files instead of a database because the project scale is relatively small.
 
-The released Windows version requires:
+CSV files are used for:
 
-* Windows 10 or Windows 11
-* No C++ development environment
-* No compiler installation
+- Product information
+- Sales records
+- Administrator authentication data
 
-The program can be run directly using the provided executable.
+The program uses:
 
-### Building from Source
+- `fstream`
+- `stringstream`
+- File input/output operations
 
-To build the project from source, you need:
+to read and write structured data.
 
-* A C++ compiler
-* C++ standard library
-* A development environment such as VS Code
+---
 
-## Running the Released Version
+### Modular Design
 
-1. Go to the [Releases](https://github.com/Caylicia3/POS_System/releases) page.
-2. Download the latest Windows release ZIP file.
-3. Extract the ZIP archive.
-4. Make sure `POS.exe`, `product.csv`, and `sale.csv` are in the same directory.
-5. Run `POS.exe`.
+The project separates different responsibilities into independent modules.
 
-The current release is:
+Structure:
 
-**v0.1.1**
-
-> **Important:** The program uses relative paths to access `product.csv` and `sale.csv`. Keep these files in the same working directory as the executable.
-
-## Building from Source
-
-Clone the repository:
-
-```bash
-git clone https://github.com/Caylicia3/POS_System.git
+```
+main.cpp
+    |
+    ├── menu module
+    |
+    ├── product module
+    |
+    ├── sale module
+    |
+    └── admin module
 ```
 
-Enter the project directory:
+This reduces coupling and improves code organization and maintainability.
 
-```bash
-cd POS_System/Project
+---
+
+### Input Validation
+
+The program includes multiple input validation mechanisms:
+
+- Invalid numeric input detection
+- Barcode checking
+- Price format checking
+- Duplicate data checking
+- Command validation
+
+The project also handles common C++ input stream issues caused by mixing:
+
+```cpp
+cin >>
 ```
 
-Compile the source files using `g++`:
+and:
 
-```bash
-g++ main.cpp menu.cpp product.cpp sale.cpp -o POS.exe
+```cpp
+getline()
 ```
 
-Run the program:
+---
+
+## Development Challenges
+
+During development, several problems were encountered and solved.
+
+### 1. File Overwriting Issue
+
+When modifying files using:
+
+```cpp
+ofstream
+```
+
+the default behavior may truncate existing files.
+
+The solution was:
+
+- Complete input validation before opening output files
+- Carefully control file writing operations
+
+---
+
+### 2. CSV Parsing
+
+Initially, CSV files were treated as simple text files.
+
+Later, the project introduced:
+
+```cpp
+stringstream
+```
+
+to parse structured data:
+
+```
+name,barcode,price
+```
+
+into C++ objects.
+
+---
+
+### 3. Input Buffer Problems
+
+Mixing:
+
+```cpp
+cin >>
+```
+
+with:
+
+```cpp
+getline()
+```
+
+can leave newline characters in the input buffer.
+
+The project handles this by clearing remaining input when necessary.
+
+---
+
+## Build and Run
+
+### Requirements
+
+- C++ compiler supporting C++17
+- Standard library support
+
+Recommended:
+
+- GCC
+- MinGW
+- Visual Studio C++ Compiler
+
+---
+
+### Compile
+
+Example:
 
 ```bash
+g++ -std=c++17 *.cpp -o POS.exe
+```
+
+---
+
+### Run from Source
+
+Make sure the executable and CSV files are located in the same directory:
+
+```
 POS.exe
+product.csv
+sale.csv
+password.csv
 ```
 
-Make sure `product.csv` and `sale.csv` are available in the working directory when running the program.
+Then run:
 
-## Error Messages
+```bash
+./POS.exe
+```
 
-The current version uses several error codes for invalid operations.
+---
 
-| Error Code | Meaning                         |
-| ---------- | ------------------------------- |
-| `Error 0`  | Product barcode not found       |
-| `Error 2`  | Invalid checkout command        |
-| `Error 3`  | Invalid product removal command |
-| `Error 4`  | Failed to record the sale       |
-| `Error 5`  | Invalid sales query             |
-| `Error 6`  | Invalid `sales` command format  |
-| `Error 7`  | Invalid date-change command     |
-| `Error 8`  | Invalid day parameter           |
+## Release Version
 
-These error codes are currently part of the command-line interface and may be redesigned in future versions.
+Pre-built executable files are available through GitHub Releases.
 
-## Version
+Users can run the program directly without installing a C++ development environment.
 
-Current release:
+To run the release version:
 
-**v0.1.1**
+1. Download the latest release package
+2. Extract all files into the same directory
+3. Run `POS.exe`
 
-This is the second official release of the project.
+The CSV files should remain in the same directory as the executable because the program uses relative paths to access data files.
 
-See the [Releases](https://github.com/Caylicia3/POS_System/releases) page for available versions and release notes.
-
-## Known Limitations
-
-This is currently a small C++ learning project.
-
-Current limitations include:
-
-* Data is stored using CSV files rather than a database.
-* The application is primarily designed for command-line use.
-* Input validation is still being improved.
-* The current data model is relatively simple.
-* Automated testing is limited.
-* The released version currently focuses on Windows.
-* The program currently depends on the CSV files being available in the expected working directory.
+---
 
 ## Future Improvements
 
 Possible future improvements include:
 
-* Improve input validation and error handling
-* Refactor the shopping cart and product data models
-* Improve the project structure
-* Add automated tests
-* Improve CSV parsing and data validation
-* Improve file path handling
-* Improve cross-platform compatibility
-* Add a build system such as CMake
-* Add continuous integration with GitHub Actions
-* Consider using SQLite for persistent data storage
-* Improve the command-line user interface
+- Replace CSV storage with a database
+- Add graphical user interface
+- Improve user permission management
+- Add automated testing
+- Improve error handling
+- Support more advanced inventory management
 
-## Learning Goals
-
-This project is mainly intended as a practical C++ learning project.
-
-Through this project, I am practicing:
-
-* C++ fundamentals
-* Functions and structures
-* STL containers
-* Header and source file organization
-* File input/output
-* CSV data processing
-* Error handling
-* Data persistence
-* Git and GitHub
-* GitHub Releases
-* Software packaging and distribution
+---
 
 ## License
 
-This project is released under the MIT License.
-
-See [LICENSE](LICENSE) for details.
+This project is licensed under the MIT License.

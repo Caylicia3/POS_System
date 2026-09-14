@@ -1,5 +1,7 @@
 - 输入安全检测（Error）
 - 注意：条形码用string类型比int方便很多，且int无法表示001(只能表示成1)，后续各种输入和检测都可以统一成string类型
+- 把跳转升级为请按任意键继续
+- 密码能不能是back?貌似可以？现阶段默认可以，但若之后出现bug请从AdminCase1处修改
 - 怎么实现打印所有record?(sale.csv)
 - 开发清空所有历史记录的功能:清空csv所有记录（但保留第一排表头）
 ofstream file("sale.csv");

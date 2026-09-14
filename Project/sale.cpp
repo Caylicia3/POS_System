@@ -14,7 +14,7 @@ using namespace std;
 void Record(int date,int& num,const vector<Product>& products,double total){
     ofstream file("sale.csv",ios::app);
     if (!file.is_open()) {
-    cout << "Error 4:Record failed" << endl;
+    cout << "Error 4: Record Failed" << endl;
     return;
     }
     //记录day
@@ -33,7 +33,7 @@ void Record(int date,int& num,const vector<Product>& products,double total){
         }
     }
     //记录总金额
-    file << "," << total << endl;
+    file << "," << total << endl;//注意！要换行
 
     file.close();
 }

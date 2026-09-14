@@ -174,6 +174,7 @@ void Checkout(string input2, vector<Product>& products, int date, int& num){
             }
             if(found2){//一个一个读入，打印目前购物车里所有商品的信息
                         char input4;
+                        bool empty = true;
                         cin.get(input4);
                         if(input4 == ' '){//如果输入的下一个字符是空格，就继续读入下一个条形码
                             return;
@@ -181,8 +182,11 @@ void Checkout(string input2, vector<Product>& products, int date, int& num){
                         else{
                         for(Product& product : products){
                             if(product.quantity > 0){
+                                empty = false;
                                 break;
-                            }
+                            }                          
+                        }
+                        if(empty){
                             cout << "Cart is empty." << endl;
                             return;
                         }

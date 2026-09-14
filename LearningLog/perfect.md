@@ -1,3 +1,4 @@
+- 输入安全检测（Error）
 - 注意：条形码用string类型比int方便很多，且int无法表示001(只能表示成1)，后续各种输入和检测都可以统一成string类型
 - 怎么实现打印所有record?(sale.csv)
 - 开发清空所有历史记录的功能:清空csv所有记录（但保留第一排表头）
@@ -471,3 +472,5 @@ A
 c == 'A'
 
 提醒一下：<conio.h> 是 Windows 专用，Linux/macOS 不一定有。
+
+- product.cpp 里的 Checkout函数有bug,如果输入001 001 空格后再\n无法进行下一步，因为cin不会读取\n，建议有时间把Checkout函数重写，把功能们拆开

@@ -73,21 +73,23 @@ void AdminMenu(){//const int& date, const int& num
         cout << "---------------------------------------------------------" << endl;
         cout << "Enter 'back' to exit Admin & return to Cashier." << endl;
         cout << "Enter 'admin' to change password." << endl;//AdminCase1
-        cout << "Enter 'setprice' to Change Item Price" << endl;
+        cout << "Enter 'setprice' to Change Item Price." << endl;
+        cout << "Enter 'itemadd' to Add New Products." << endl;
         cin >> input;//记得检查第一次是不是"back“//检查非法输入
         cin.ignore(1000,'\n');
             if(input == "back"){
                 break;
-            }
-            else if(input == "admin"){
+            }else if(input == "admin"){
                 Redirect();
                 AdminCase1();//尽量不要嵌套递归函数(AdminMenu里套AdminMenu，而采用while循环持续等待管理员输入。)
-            }
-            else if(input == "setprice"){
+            }else if(input == "setprice"){
                 Redirect();
                 AdminCase2();
-            }
-            else{
+            }else if(input == "itemadd"){
+                Redirect();
+                AdminCase3();
+
+            }else{
                 cout << "Error 15:Invalid input" << endl;
                 cout << "Please Try Again."  << endl;
                 clearScreen();
@@ -96,7 +98,7 @@ void AdminMenu(){//const int& date, const int& num
     }
 
 void AdminCase1(){
-    cout << "Re-enter password for verification." << endl;
+    cout << "Re-enter Password For Verification." << endl;
     if(VerifyPassword()){
         /*
         ifstream oldfile("password.csv");//储存原密码line//注意：两次操作(if/of)的file名称需要不同!一个是读取，一个是写入。file.close() 后，file 变量没有消失。
@@ -105,7 +107,7 @@ void AdminCase1(){
         oldfile.close();
         修改逻辑后无需再单独储存旧密码
         */
-        cout << "Please enter a new password." << endl;
+        cout << "Please Enter a New Password." << endl;
         string input1, input2;
         getline(cin,input1);
         cout << "Re-enter password to confirm:" << endl;
@@ -150,7 +152,7 @@ void AdminCase2(){//setprice
             }
             else{//找到商品了
                 cout << "Please Enter the New Price." << endl;
-                cout << "Note : Commas(',') are not allowed.Numbers only." << endl;
+                cout << "Note : Commas(',') Are Not Allowed.Numbers Only." << endl;
                 string New;
                 cin >> New;//不会输入空白
                 if(New.find(',') == string::npos){//未发现逗号
@@ -176,14 +178,14 @@ void AdminCase2(){//setprice
             }
         }
         else{
-            cout << "Error 2:Invalid input!" << endl; 
+            cout << "Error 18:Invalid input!" << endl; 
             cout << "Try Again." << endl;
         }
     }
     Redirect();
 }
 
-bool NumCheck(string input){
+bool NumCheck(string input){//检验数字（不可以包含小数点，0-9的数字）
     if(input.empty())
         return false;
     for(char c : input){
@@ -201,7 +203,7 @@ void RecreateProduct(const vector<Product>& products){//回填商品信息
     }
 }
 
-bool PriceCheck(string input){
+bool PriceCheck(string input){//检验数字（含小数）
     try{
         size_t pos;
         stod(input, &pos);
@@ -210,4 +212,98 @@ bool PriceCheck(string input){
     catch(...){
         return false;
     }
+}
+
+void AdminCase3(){
+    cout << "Only One Item Can Be Added At a Time." << endl;
+    cout << "Enter the Barcode of the New Product.Numbers Only.(eg.001)" << endl;
+    cout << "Enter 'back' to Exit." << endl;
+    Check();
+    Redirect();
+}
+
+bool DuplicateCheck(string add, const string& data_member){//条形码和名称都需要查重//注意：使用时data_member只能是name或barcode
+    vector<Product> products = CreateProduct("product.csv");
+        for(const Product& product : products){
+            //if(product.data_member == add);不能这样写，因为Product没有data_member这个成员
+            if(data_member == "barcode" && product.barcode == add){
+                return false;
+            }
+            else if(data_member == "name" && product.name == add){
+                return false;
+            }
+            else{
+                return true;
+            }
+        }
+    return true;
+}
+
+void Check(){
+    BarcodeCheck();
+}
+
+void BarcodeCheck(){
+    string Barcode;
+    while(cin >> Barcode && Barcode != "back"){
+        if(NumCheck(Barcode)){
+            if(DuplicateCheck(Barcode, "barcode")){
+                cout << "Valid Input "<< endl;
+                NameCheck(Barcode);
+                break;
+            }else{
+                cout << "Error 17: Barcode Already Exists.Please Try Again.";
+            }
+        }else{
+            cout << "Error 16: Numbers Only!" << endl;
+        }
+    }
+    return;
+}
+
+void NameCheck(const string& Barcode){
+    cout << "Enter the Name of the New Product.No Spaces Or Commas Allowed." << endl;
+    cout << "Enter 'back' to Exit." << endl;
+    string Name;
+    while(cin >> Name && Name != "back"){
+        if(Name.find(',') == string::npos){//逗号检测，比较简单就没写成函数
+            if(DuplicateCheck(Name, "name")){
+                cout << "Valid Input "<< endl;
+                PriceCheck(Barcode, Name);
+                break;
+            }else{
+                cout << "Error 20: Name Already Exists.Please Try Again.";
+            }
+        }else{
+            cout << "Error 19 : Commas(',') Are Not Allowed.Numbers Only." << endl;
+            cout << "Enter 'back' to Exit." << endl;
+            cout << "Please Try Again." << endl;
+        }
+    }
+    return;
+}
+
+void PriceCheck(const string& Barcode, const string& Name){
+    cout << "Enter the Price of the New Product.Numbers Only(eg.3.50)." << endl;
+    cout << "Enter 'back' to Exit." << endl;
+    string Price;
+    while(cin >> Price && Price != "back"){
+        if(PriceCheck(Price)){
+            cout << "Valid Input "<< endl;
+            cout << "The New Produect :" << endl;
+            cout << "name :" << Name << "  " << "barcode :" << Barcode << "  " << "price :" << Price << endl;
+            ofstream file("product.csv",ios::app);
+            if (!file.is_open()) {
+            cout << "Error 22: Record Failed" << endl;
+            break;
+            }
+            file << Name << ',' << Barcode << ',' << Price << '\n';
+            break;
+        }else{
+            cout << "Error 21:Invalid input!Numbers Only(eg.3.50)." << endl;
+            cout << "Enter 'back' to Exit." << endl;
+            cout << "Please Try Again." << endl;
+        }
+    }
+    return;
 }

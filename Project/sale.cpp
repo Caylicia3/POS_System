@@ -93,7 +93,7 @@ void Case3(int& date,int& num){
             clearScreen();
         }
         else{
-            cout << "Error 7:Invalid input" << endl;
+            cout << "Error 7:Invalid Input" << endl;
         }
     }
     ReturnMenu();

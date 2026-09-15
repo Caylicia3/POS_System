@@ -33,3 +33,7 @@ void AdminCase4();
 bool PasswordDuplicateCheck(const string& input);
 
 void AdminCase5();
+
+void AdminCase6();
+
+void AdminCase7();

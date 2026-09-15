@@ -70,12 +70,14 @@ void AdminMenu(){//const int& date, const int& num
         }
         file.close();
         cout << "---------------------------------------------------------" << endl;
-        cout << "Enter 'back' to exit Admin & return to Cashier." << endl;
-        cout << "Enter 'admin' to change password." << endl;//AdminCase1
-        cout << "Enter 'setprice' to change item price." << endl;
-        cout << "Enter 'itemadd' to add new products." << endl;
-        cout << "Enter 'itemdel' to delete products." << endl;
-        cout << "Enter 'restock' to add stock to the specified product." << endl;
+        cout << " Enter 'back' to exit Admin & return to Cashier." << endl;
+        cout << " Enter 'admin' to change password." << endl;//AdminCase1
+        cout << " Enter 'setprice' to change item price." << endl;
+        cout << " Enter 'itemadd' to add new products." << endl;
+        cout << " Enter 'itemdel' to delete products." << endl;
+        cout << " Enter 'restock' to add stock to the specified product." << endl;
+        cout << " Enter 'setstock' to directly set product stock (Stocktake Correction)." << endl;
+        cout << " Enter 'prices' to view all products (with stock)." << endl;
         cin >> input;//记得检查第一次是不是"back“//检查非法输入
         cin.ignore(1000,'\n');
             if(input == "back"){
@@ -95,6 +97,12 @@ void AdminMenu(){//const int& date, const int& num
             }else if(input == "restock"){
                 Redirect();
                 AdminCase5();
+            }else if(input == "setstock"){
+                Redirect();
+                AdminCase6();
+            }else if(input == "prices"){
+                Redirect();
+                AdminCase7();
             }else{
                 cout << "Error 15:Invalid input. Please Try Again." << endl;
                 Refresh();
@@ -240,12 +248,12 @@ bool DuplicateCheck(const string& add, const string& data_member){//条形码和
     for(const Product& product : products){
         //if(product.data_member == add);不能这样写，因为Product没有data_member这个成员
         if(data_member == "barcode" && product.barcode == add){
-            return false;
+            return false;//发现重复返回false
         }else if(data_member == "name" && product.name == add){
             return false;
         }
     }
-    return true;
+    return true;//未发现重复返回true
 }
 
 void Check(){
@@ -411,4 +419,53 @@ void AdminCase5(){
         }
     }
     Redirect();
+}
+
+void AdminCase6(){
+    cout << "Enter the Barcode to Set Product Stock (Stocktake Correction)." << endl;
+    cout << "Enter 'back' to exit." << endl;
+    string input;
+    while(cin >> input && input != "back"){
+        if(!DuplicateCheck(input, "barcode")){
+            cout << "Enter the updated stock quantity for this product:" << endl;
+            cout << "Enter 'back' to exit." << endl;
+            string num;//update
+            while(cin >> num && num != "back"){
+                if(NumCheck(num)){
+                    vector<Product> products = CreateProduct("product.csv");
+                    for(auto& product : products){
+                        if(product.barcode == input){
+                            int add = stoi(num);//注意：类型转换
+                            product.stock = add;
+                            cout << "The stock of " << product.name << " is " << product.stock << " now." << endl;
+                            break;
+                        }
+                    }
+                    RecreateProduct(products);
+                    break;
+                }else{
+                    cout << "Error 27: Numbers Only.Negative quantities are not allowed." << endl;
+                    cout << "Try Again or Enter 'back' to Exit." << endl;
+                }
+            }
+            break;   
+        }else{
+            cout << "Error 26: Invalid Barcode. Product Not Found.You can try again or exit." << endl;
+            cout << "Enter 'back' to exit." << endl;
+        }
+    }
+    Redirect();
+}
+
+void AdminCase7(){
+    vector<Product> products = CreateProduct("product.csv");
+    for(const Product& product : products){
+        cout << "Name:" << product.name << "  " << "Barcode:" << product.barcode << "  " <<  "Price:" << product.price << "  " << "Stock:" << product.stock << endl;
+    }
+    cout << "---------------------------------------" << endl;
+    cout << " Enter 'back' to exit." << endl;
+    string input;
+    while(cin >> input && input != "back"){//本来想实现“按任意键继续”功能，但是比较简单的写法会用到_getch()(无法跨平台使用的函数)，所以没有实现这个功能
+        cout << "Error 28: Invalid Input" << endl;
+    }
 }

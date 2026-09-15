@@ -1,5 +1,6 @@
 - 输入安全检测（Error）
 - 注意：条形码用string类型比int方便很多，且int无法表示001(只能表示成1)，后续各种输入和检测都可以统一成string类型
+- 每次使用结构体之间必须重新生成，避免修改信息不能及时写入
 - 把跳转升级为请按任意键继续
 - 密码能不能是back?貌似可以？现阶段默认可以，但若之后出现bug请从AdminCase1处修改
 - 怎么实现打印所有record?(sale.csv)
@@ -414,65 +415,34 @@ stod(input, &pos);
 方法2：真正的“任意键继续”（Windows）
 
 因为你的环境是 Windows（PowerShell + MSYS2），可以用：
-
 #include <conio.h>
-
 void Pause(){
     cout << "Press any key to continue...";
     _getch();
 }
-
-然后：
-
-Pause();
-
-效果：
-
-Press any key to continue...
-
-你按：
-
-a
-
-或者：
-
-Space
-
-或者：
-
-Enter
-
-都会立即继续。
-
-_getch()是什么？
-
-它来自：
-
-#include <conio.h>
-
-作用：
-
-_getch();
-
-读取一个字符：
-
-但是：
-
-不需要 Enter
-不会显示输入内容
-
-例如：
-
-char c = _getch();
-
-如果你按：
-
-A
-
-那么：
-
-c == 'A'
-
+然后：Pause();
+效果：Press any key to continue...
+按：a或者Space或者Enter都会立即继续。
+_getch()来自：#include <conio.h>
+_getch()作用：读取一个字符：
+但是：不需要 Enter不会显示输入内容
+例如：char c = _getch();
+如果你按：A
+那么：c == 'A'
 提醒一下：<conio.h> 是 Windows 专用，Linux/macOS 不一定有。
+完整示例：
+#include <conio.h>
+void Pause()
+{
+    cout << "Press any key to continue...";
+    _getch();
+}
 
+效果：Press any key to continue...按任意键后继续。
+
+  - _getch()：
+    等待用户输入一个键
+    不会显示输入字符
+    不需要按 Enter
+    
 - product.cpp 里的 Checkout函数有bug,如果输入001 001 空格后再\n无法进行下一步，因为cin不会读取\n，建议有时间把Checkout函数重写，把功能们拆开

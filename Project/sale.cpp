@@ -25,7 +25,7 @@ void Record(int date,int& num,const vector<Product>& products,double total){
     //记录当下时间
     auto now = chrono::system_clock::now();
     time_t currentTime = chrono::system_clock::to_time_t(now);
-    file << "," << put_time(localtime(&currentTime), "%H:%M:%S") << ",";//写入数据
+    file << "," << put_time(localtime(&currentTime), "%H:%M:%S") << ",";//写入数据（格式）
     //记录商品明细
     for(const Product& product : products){
         if(product.quantity > 0){

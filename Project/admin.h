@@ -26,6 +26,10 @@ void NameCheck(const string& Barcode);
 
 void NewPriceCheck(const string& Barcode, const string& Name);
 
+void StockCheck(const string& Barcode, const string& Name, const string& Price);
+
 void AdminCase4();
 
 bool PasswordDuplicateCheck(const string& input);
+
+void AdminCase5();

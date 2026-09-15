@@ -72,9 +72,10 @@ void AdminMenu(){//const int& date, const int& num
         cout << "---------------------------------------------------------" << endl;
         cout << "Enter 'back' to exit Admin & return to Cashier." << endl;
         cout << "Enter 'admin' to change password." << endl;//AdminCase1
-        cout << "Enter 'setprice' to Change Item Price." << endl;
-        cout << "Enter 'itemadd' to Add New Products." << endl;
-        cout << "Enter 'itemdel' to Delete Products." << endl;
+        cout << "Enter 'setprice' to change item price." << endl;
+        cout << "Enter 'itemadd' to add new products." << endl;
+        cout << "Enter 'itemdel' to delete products." << endl;
+        cout << "Enter 'restock' to add stock to the specified product." << endl;
         cin >> input;//记得检查第一次是不是"back“//检查非法输入
         cin.ignore(1000,'\n');
             if(input == "back"){
@@ -91,6 +92,9 @@ void AdminMenu(){//const int& date, const int& num
             }else if(input == "itemdel"){
                 Redirect();
                 AdminCase4();
+            }else if(input == "restock"){
+                Redirect();
+                AdminCase5();
             }else{
                 cout << "Error 15:Invalid input. Please Try Again." << endl;
                 Refresh();
@@ -194,7 +198,7 @@ void AdminCase2(){//setprice
     Redirect();
 }
 
-bool NumCheck(string input){//检验数字（不可以包含小数点，0-9的数字）
+bool NumCheck(string input){//检验数字（不可以包含小数点，0-9的数字——不包含负数）//负数return false;
     if(input.empty())
         return false;
     for(char c : input){
@@ -206,9 +210,9 @@ bool NumCheck(string input){//检验数字（不可以包含小数点，0-9的�
 
 void RecreateProduct(const vector<Product>& products){//回填商品信息
     ofstream file("product.csv");
-    file << "name,barcode,price\n";//不要忘记写表头
+    file << "name,barcode,price,stock\n";//不要忘记写表头
     for(const Product& product : products){
-        file << product.name << "," << product.barcode << "," << product.price << endl;
+        file << product.name << "," << product.barcode << "," << product.price << "," << product.stock << endl;
     }
 }
 
@@ -295,17 +299,35 @@ void NewPriceCheck(const string& Barcode, const string& Name){
     while(cin >> Price && Price != "back"){
         if(PriceCheck(Price)){
             cout << "Valid Input "<< endl;
-            cout << "The New Produect :" << endl;
-            cout << "name :" << Name << "  " << "barcode :" << Barcode << "  " << "price :" << Price << endl;
+            StockCheck(Barcode, Name, Price);
+            break;
+        }else{
+            cout << "Error 21:Invalid input!Numbers Only(eg.3.50)." << endl;
+            cout << "Enter 'back' to Exit." << endl;
+            cout << "Please Try Again." << endl;
+        }
+    }
+    return;
+}
+
+void StockCheck(const string& Barcode, const string& Name, const string& Price){
+    cout << "Enter the Stock of the New Product.Numbers Only(eg.10)." << endl;
+    cout << "Enter 'back' to Exit." << endl;
+    string Stock;
+    while(cin >> Stock && Stock != "back"){
+        if(NumCheck(Stock)){
+            cout << "Valid Input "<< endl;
+            cout << "The New Product :" << endl;
+            cout << "name :" << Name << "  " << "barcode :" << Barcode << "  " << "price :" << Price << "  " << "stock :" << Stock << endl;
             ofstream file("product.csv",ios::app);
             if (!file.is_open()) {
             cout << "Error 22: Record Failed" << endl;
             break;
             }
-            file << Name << ',' << Barcode << ',' << Price << '\n';
+            file << Name << ',' << Barcode << ',' << Price << ',' << Stock << '\n';//注意，在CreateProduct函数里有类型转换，所以填入的可以都用string类型
             break;
         }else{
-            cout << "Error 21:Invalid input!Numbers Only(eg.3.50)." << endl;
+            cout << "Error 23:Invalid input." << endl;
             cout << "Enter 'back' to Exit." << endl;
             cout << "Please Try Again." << endl;
         }
@@ -327,10 +349,10 @@ void AdminCase4(){
         }
         if(Valid){
             ofstream file("product.csv");
-            file << "name" << ',' << "barcode" << ',' << "price" << endl;
+            file << "name" << ',' << "barcode" << ',' << "price" << ',' << "stock" << endl;
             for(const auto& product : products){//
                 if(product.barcode != Barcode){
-                    file << product.name << ',' << product.barcode << ',' << product.price << endl;
+                    file << product.name << ',' << product.barcode << ',' << product.price << ',' << product.stock << endl;
                 }
             }
             cout << "Product Deleted Successfully." << endl << endl;
@@ -353,4 +375,40 @@ bool PasswordDuplicateCheck(const string& input){
         return false;
     }
     return true;
+}
+
+void AdminCase5(){
+    cout << "Enter the barcode of the product you want to restock." << endl;
+    cout << "Enter 'back' to exit." << endl;
+    string input;
+    while(cin >> input && input != "back"){
+        if(!DuplicateCheck(input, "barcode")){
+            cout << "Enter quantity to restock:" << endl;
+            cout << "Enter 'back' to exit." << endl;
+            string num;//restock
+            while(cin >> num && num != "back"){
+                if(NumCheck(num)){
+                    vector<Product> products = CreateProduct("product.csv");
+                    for(auto& product : products){//必须加&，不然只改变了复制出的副本，没有改变实际的值
+                        if(product.barcode == input){
+                            int add = stoi(num);//类型转换！总是写错变量：是num 不是input!
+                            product.stock += add;
+                            cout << "The stock of " << product.name << " is " << product.stock << " now." << endl;
+                            break;//及时break,跳出循环
+                        }
+                    }
+                    RecreateProduct(products);
+                    break;
+                }else{
+                    cout << "Error 25: Numbers Only.Negative quantities are not allowed." << endl;
+                    cout << "Try Again or Enter 'back' to Exit." << endl;
+                }
+            }
+            break;   
+        }else{
+            cout << "Error 24: Invalid Barcode. Product Not Found.You can try again or exit." << endl;
+            cout << "Enter 'back' to exit." << endl;
+        }
+    }
+    Redirect();
 }

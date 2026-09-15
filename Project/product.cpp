@@ -21,12 +21,14 @@ vector<Product> CreateProduct(const string& filename){
     getline(file,line);//跳过第一行表头
     while(getline(file,line)){
         stringstream ss(line);
-        string name, barcode;
-        double price;
+        string name, barcode, pre_price;
+        int stock;
         getline(ss,name,',');
         getline(ss,barcode,',');
-        ss >> price;
-        Product product{name, barcode, price};//注意：这个 product 每次循环结束就没了，需要用vector存储起来
+        getline(ss,pre_price,',');//getline(ss, 变量, ',') 的第二个参数必须是 std::string。ss >> 变量 的 >> 对 int、double 等数字类型有重载，可以直接解析数字。
+        ss >> stock;
+        double price = stod(pre_price);//注意类型转换
+        Product product{name, barcode, price, stock};//注意：这个 product 每次循环结束就没了，需要用vector存储起来
         products.push_back(product);
     }
      
@@ -65,7 +67,7 @@ void ShowProductInfo(const string& barcode){
         cout << "Product Name: " << line1 << endl;
         cout << "Barcode: " << line2 << endl;
         cout << "Price: " << line3 << endl;
-    }else if(barcode=="prices"){
+    }else if(barcode == "prices"){
         string line;
         ifstream file("product.csv");
         getline(file,line);
@@ -75,7 +77,7 @@ void ShowProductInfo(const string& barcode){
             cout << "Product Name: " << line << "   ";
             getline(ss,line,',');
             cout << "Barcode: " << line << "   ";
-            ss >> line;
+            getline(ss,line,',');
             cout << "Price: " << line << endl;
         }
     }else {
@@ -97,7 +99,7 @@ bool Judge(string& line1, string& line2, string& line3, const string& barcode, b
         stringstream ss(line1);//创建一个 std::stringstream 对象 ss，并用字符串 line 的内容初始化它。
         getline(ss,line1,',');
         getline(ss,line2,',');
-        ss >> line3;
+        getline(ss,line3,',');
         if(barcode == line2){
             return true;
         }
@@ -119,7 +121,7 @@ void Case1(){
     ReturnMenu();
 }
 
-void Case2(vector<Product>& products,int date,int& num){
+void Case2(int date, int& num){
     cout << "Enter barcodes to add items to the order. Each barcode adds 1 item (separated by spaces)." << endl;
     cout << "Enter 'exit' or 'quit' to quit." << endl;
     cout << "Enter barcode with a '-' prefix to decrease quantity by 1 (e.g., '-001').Multiple entries allowed. Separate with spaces." << endl;
@@ -129,12 +131,13 @@ void Case2(vector<Product>& products,int date,int& num){
     cout << "Please enter your command: ";
     string input2;
     while(cin >> input2 && input2 != "exit" && input2 != "quit"){//每一个输入都循环一次
-        Checkout(input2, products, date, num);             
+        Checkout(input2, date, num);             
     }   
     ReturnMenu();
 };
 
-void Checkout(string input2, vector<Product>& products, int date, int& num){
+void Checkout(string input2, int date, int& num){
+    vector<Product> products = CreateProduct("product.csv");
     bool found1 = false, found2 = false;
     for(Product& product : products){
         if(product.barcode == input2){
@@ -227,7 +230,7 @@ void Checkout(string input2, vector<Product>& products, int date, int& num){
             }
            }
         cout << "Total: " << total << endl;
-        Record(date,num,products,total); 
+        Record(date, num, products, total); 
         for(Product& product : products){
             product.quantity = 0;
         }

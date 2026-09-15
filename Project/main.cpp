@@ -11,7 +11,7 @@
 using namespace std;
 
 int main(){
-    vector<Product> products = CreateProduct("product.csv");
+    //vector<Product> products = CreateProduct("product.csv");
     int input1 , date = GetToday() , num = GetTodayNum(date);
     do{
         ShowMenu(date,num);
@@ -35,7 +35,7 @@ int main(){
             }
             case 2:{
                 Redirect();
-                Case2(products,date,num);
+                Case2(date, num);
                 break;
             }
             case 3:{

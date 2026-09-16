@@ -13,7 +13,7 @@ void ShowMenu(int date,int num){
     cout << "Checkout -- Please enter 2" << endl;
     cout << "Date Change (+1 Date) -- Please Enter 3" << endl;
     cout << "View All Sales Records and Total Revenue -- Please Enter 4" << endl;
-    cout << "Clear All Sales Records -- Please Enter 5" << endl;
+    cout << "Clear All Sales Records -- Please Enter 5" << endl;//注意，库存不会被重置
     cout << "Enter Administrator Mode -- Please Enter 6" << endl;
 }
 

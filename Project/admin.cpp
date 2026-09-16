@@ -69,7 +69,7 @@ void AdminMenu(){//const int& date, const int& num
             cout << "Current: Default password" << endl;
         }
         file.close();
-        cout << "---------------------------------------------------------" << endl;
+        cout << "-------------------------------------------------------------------------" << endl;
         cout << " Enter 'back' to exit Admin & return to Cashier." << endl;
         cout << " Enter 'admin' to change password." << endl;//AdminCase1
         cout << " Enter 'setprice' to change item price." << endl;
@@ -462,10 +462,11 @@ void AdminCase7(){
     for(const Product& product : products){
         cout << "Name:" << product.name << "  " << "Barcode:" << product.barcode << "  " <<  "Price:" << product.price << "  " << "Stock:" << product.stock << endl;
     }
-    cout << "---------------------------------------" << endl;
+    cout << "-----------------------------------------------" << endl;
     cout << " Enter 'back' to exit." << endl;
     string input;
     while(cin >> input && input != "back"){//本来想实现“按任意键继续”功能，但是比较简单的写法会用到_getch()(无法跨平台使用的函数)，所以没有实现这个功能
         cout << "Error 28: Invalid Input" << endl;
     }
+    Redirect();
 }

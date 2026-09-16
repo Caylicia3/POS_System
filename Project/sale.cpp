@@ -11,7 +11,7 @@
 
 using namespace std;
 
-void Record(int date,int& num,const vector<Product>& products,double total){
+void Record(int date,int& num,const vector<Product>& products,double total){//销售记录
     ofstream file("sale.csv",ios::app);
     if (!file.is_open()) {
     cout << "Error 4: Record Failed" << endl;

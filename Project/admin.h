@@ -16,7 +16,7 @@ bool PriceCheck(string input);
 
 void AdminCase3();
 
-bool DuplicateCheck(const string& add, const string& data_member);
+bool DuplicateCheck(const string& add, const string& data_member);//发现重复返回false//未发现重复返回true
 
 void Check();
 

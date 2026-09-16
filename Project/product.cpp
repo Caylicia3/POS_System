@@ -7,6 +7,7 @@
 #include <thread> // 暂停时间
 #include <chrono>
 #include "menu.h"
+#include "admin.h"
 //#include <iomanip>
 using namespace std;
 
@@ -121,22 +122,162 @@ void Case1(){
     ReturnMenu();
 }
 
-void Case2(int date, int& num){
+void Case2(int date, int& num){//重写版（v0.1.4以前的版本都是未重写的）重新拆分逻辑、使用stringstream修复输入bug、让运行逻辑更清晰
     cout << "Enter barcodes to add items to the order. Each barcode adds 1 item (separated by spaces)." << endl;
     cout << "Enter 'exit' or 'quit' to quit." << endl;
     cout << "Enter barcode with a '-' prefix to decrease quantity by 1 (e.g., '-001').Multiple entries allowed. Separate with spaces." << endl;
     cout << "Enter 'print' to print the current receipt (items, quantities, prices, and total)." << endl;
     cout << "Enter 'drop' to clear the order and restart." << endl;
     cout << "Enter 'checkout' to finalize the order, print the receipt, and clear the order." << endl;
-    cout << "Please enter your command: ";
+    cout << "-----------------------------------------------------------------------------------------------------------------------------" << endl;
+    cout << "Please enter your command: ";//stringstream 支持同时处理多个输入（eg. 001 006 002 -001 print 002 drop 003 checkout)
     string input2;
-    while(cin >> input2 && input2 != "exit" && input2 != "quit"){//每一个输入都循环一次
-        Checkout(input2, date, num);             
-    }   
+    vector<Product> products = CreateProduct("product.csv");
+    cin.ignore(1000,'\n');//又忘记处理回车了
+    while(1){
+        getline(cin, input2);
+        stringstream ss(input2);
+        int record = 0;//record1用于判断要不要输出目前的购物车
+        while(ss >> input2 && input2 != "exit" && input2 != "quit"){//若exit在末尾，也会执行前面的内容（按顺序读取）
+            //Checkout(input2, date, num);   
+            if(!DuplicateCheck(input2, "barcode")){//输入的是条形码
+                bool StockCheck = true;
+                for(auto& product : products){
+                    if(input2 == product.barcode){
+                        if(product.stock == 0){
+                            StockCheck = false;
+                        }
+                    }
+                }
+                if(StockCheck){
+                    for(auto& product : products){
+                        if(input2 == product.barcode){
+                            product.stock--;
+                            product.quantity++;
+                        }
+                    }
+                    record = 1;
+                }else{
+                    cout << "Error 3: Insufficient stock for item with barcode " << input2 << endl;
+                    //cout << "Please continue entering." << endl;
+                }
+            }else if(input2[0] == '-'){
+                input2 = input2.substr(1);//去掉负号(截取负号后面的部分)
+                if(!DuplicateCheck(input2, "barcode")){
+                    bool QuantityCheck = true;
+                    for(auto& product : products){
+                        if(input2 == product.barcode){
+                            if(product.quantity == 0){
+                                QuantityCheck = false;
+                            }
+                        }
+                    }
+                    if(QuantityCheck){
+                        for(auto& product : products){
+                            if(input2 == product.barcode){
+                                product.stock++;
+                                product.quantity--;
+                            }
+                        }
+                        record = 1;
+                    }else{
+                        cout << "Error 30: No " << input2 << " in cart " << endl;
+                    }
+                }else{
+                    cout << "Error 31: Barcode does not exist" << endl;
+                }
+            }
+            else if(input2 == "print"){
+                record = 0;//处理同时输入条形码和"checkout"的情况
+                bool checkEmpty1 = true;
+                double total = 0;
+                cout << "===== Current Order =====:" << endl;
+                for(Product& product : products){
+                    if(product.quantity > 0){
+                        cout << product.name << " " << product.price << "*" << product.quantity << "=" << product.price * product.quantity << endl;
+                        total += product.price * product.quantity;
+                        checkEmpty1 = false;
+                    }
+                }
+                if(checkEmpty1){
+                    cout << "Cart is empty." << endl;
+                }else{
+                    cout << "Total: " << total << endl;
+                }
+            }
+            else if(input2 == "drop"){
+                record = 0;//处理同时输入条形码和"drop"的情况
+                for(Product& product : products){
+                    product.stock+=product.quantity;
+                    product.quantity = 0;
+                }
+                cout << "Cart Cleared." << endl;
+            }
+            else if(input2 == "checkout"){
+                record = 0;//处理同时输入条形码和"checkout"的情况
+                bool checkEmpty2 = true;
+                double total = 0;
+                cout << "====== Final Receipt ======:" << endl;
+                for(Product& product : products){
+                    if(product.quantity > 0){
+                        cout << product.name << " " << product.price << "*" << product.quantity << "=" << product.price * product.quantity << endl;
+                        total += product.price * product.quantity;
+                        checkEmpty2 = false;
+                    }
+                }
+                if(checkEmpty2){
+                    cout << "Cart is empty." << endl;
+                }else{
+                    cout << "Total: " << total << endl;
+                    Record(date, num, products, total); //注意：若销售记录没有成功保存 但购物车仍然会被清空 且库存已经在加入购物车的时候减少（运行逻辑）
+                    for(Product& product : products){
+                        product.quantity = 0;
+                    }
+                }
+                cout << "Continue, or enter 'exit' or 'quit' to quit." << endl;
+            }
+            else{
+                cout << "Error 2: " << input2 << " is invalid input." << endl;
+            }
+        }
+        //一排输入接受完毕后的再处理和输出
+
+        if(record == 1){
+            cout << "----- Current Cart -----:" << endl;
+            bool checkEmpty2 = true;
+            for(Product& product : products){
+                if(product.quantity > 0){
+                    cout << product.name << " " << product.price << "*" << product.quantity << "=" << product.price * product.quantity << endl;
+                    checkEmpty2 = false;
+                }
+            }
+            if(checkEmpty2){
+                cout << "Cart is empty." << endl;
+            }   
+        }
+
+        if(input2 == "quit" || input2 == "exit"){
+            break;
+        }
+    }
+    RecreateProduct(products);//回填信息   
     ReturnMenu();
 };
 
-void Checkout(string input2, int date, int& num){
+/*bool StockCheck(const string& barcode, vector<Product>& products){此函数内容与其他部分重合度太高，所以干脆不拆成函数了
+    //vector<Product> products = CreateProduct("product.csv");不能重新生成，不然数据未更新
+    for(auto& product : products){
+        if(barcode == product.barcode){
+            if(product.stock == 0){
+                return false;
+            }
+        }
+    }
+    return true;
+}
+    */
+
+/*void Checkout(string input2, int date, int& num){
     vector<Product> products = CreateProduct("product.csv");
     bool found1 = false, found2 = false;
     for(Product& product : products){
@@ -239,3 +380,4 @@ void Checkout(string input2, int date, int& num){
         cout << "Error 2:Invalid input" << endl; 
     }
 }
+*/

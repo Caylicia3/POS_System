@@ -27,8 +27,7 @@ bool DuplicateCheck(string add, CheckType type){
 调用举例：
 DuplicateCheck("001", CheckType::Barcode);
 DuplicateCheck("cola", CheckType::Name);
-- 
-- 
+
 
 ## 遇到的坑 & 解决方案
 - **坑**：find() 是 string 的成员函数，用来查找某个字符/字符串的位置。
@@ -66,22 +65,6 @@ file << "cola,001,3.5\n";
 等价：file << price << '\n' << flush;
 但是写文件时通常更推荐：'\n'
 因为：endl 会强制刷新缓冲区，大量写文件时效率低，你的项目规模没影响，但养成习惯比较好。
-  - **解决**：
-- **坑**：
-  - **解决**：
-- **坑**：
-  - **解决**：
-- **坑**：
-  - **解决**：
-- **坑**：
-  - **解决**：
-- **坑**：
-  - **解决**：
-- **坑**：
-  - **解决**：
-## 今日学到的命令
-- 
-- 
 
 ## 待办
 - 把新价格写入product.csv文件

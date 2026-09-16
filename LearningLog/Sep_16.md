@@ -1,5 +1,5 @@
 # 学习日志 - 2026年9月日
-
+//backup-1是为了防止git pull README.md和LICENSE后造成代码修改
 ## 今日学习内容
 - 重写checkout()函数----修改输入和处理逻辑
 - 

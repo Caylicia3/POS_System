@@ -4,11 +4,11 @@
 using namespace std;
 
 void ShowMenu(int date,int num){
-    cout << "==============================================================" << endl;
-    cout << "7-Eleven Convenience Store POS Command-Line Interactive System" << endl;
-    cout << "==============================================================" << endl;
-    cout << "Day:" << date << "---" << "Current Receipt Number" << num << endl << endl;
-    cout << "Exit the Menu -- Please Enter 0" << endl;
+    cout << "======================================================" << endl;
+    cout << "Convenience Store POS Command-Line Interactive System" << endl;
+    cout << "======================================================" << endl;
+    cout << "Day: " << date << "   ---   " << "Current Receipt Number: " << num << endl << endl;
+    cout << "Exit -- Please Enter 0" << endl;
     cout << "Show Product Information -- Please Enter 1" << endl;
     cout << "Checkout -- Please enter 2" << endl;
     cout << "Date Change (+1 Date) -- Please Enter 3" << endl;

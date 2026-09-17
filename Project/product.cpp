@@ -79,7 +79,7 @@ void ShowProductInfo(const string& barcode){
             getline(ss,line,',');
             cout << "Barcode: " << line << "   ";
             getline(ss,line,',');
-            cout << "Price: " << line << endl;
+            cout << "Price: " << line << endl << endl;
         }
     }else {
         if(valid){

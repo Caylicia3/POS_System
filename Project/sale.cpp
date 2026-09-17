@@ -90,7 +90,6 @@ void Case3(int& date,int& num){
             cout << "Refreshing in 2 seconds..." <<endl;
             this_thread::sleep_for(chrono::seconds(2));
             break;
-            clearScreen();
         }
         else{
             cout << "Error 7:Invalid Input" << endl;

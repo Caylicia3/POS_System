@@ -172,30 +172,33 @@ void AdminCase2(){//setprice
                 cout << "Error 11:Cant't Find the Product!" << endl;
             }
             else{//找到商品了
-                cout << "Please Enter the New Price." << endl;
-                cout << "Note : Commas(',') Are Not Allowed.Numbers Only." << endl;
                 string New;
-                cin >> New;//不会输入空白
-                if(New.find(',') == string::npos){//未发现逗号
-                    if(PriceCheck(New)){//检测价格是否合理
-                        for(auto& product : products){
-                            if(product.barcode == input){
-                                product.price = stod(New);//注意：类型转换——price是double  New是string  PriceCheck函数并未改变New的类型
-                                break;
+                while(cin >> New && New != "back"){//不会输入空白
+                    cout << "Please Enter the New Price." << endl;
+                    cout << "Note : Commas(',') Are Not Allowed.Numbers Only." << endl;
+                    if(New.find(',') == string::npos){//未发现逗号
+                        if(PriceCheck(New)){//检测价格是否合理
+                            for(auto& product : products){
+                                if(product.barcode == input){
+                                    product.price = stod(New);//注意：类型转换——price是double  New是string  PriceCheck函数并未改变New的类型
+                                    break;
+                                }
                             }
+                            RecreateProduct(products);//把更改后的商品信息填回去
+                            cout << "Product Price Updated Successfully." << endl;
+                            Redirect();
+                            cout << "Enter Barcode to Continue Editing (Numbers only)." << endl;
+                            cout << "Enter 'back' to Return." << endl;
+                            }else{
+                                cout << "Error 14: Price Must Be a Number! Enter price again." << endl;
                         }
-                        RecreateProduct(products);//把更改后的商品信息填回去
-                        cout << "Product Price Updated Successfully." << endl;
-                        Redirect();
-                        cout << "Enter Barcode to Continue Editing (Numbers only)." << endl;
-                        cout << "Enter 'back' to Return." << endl;
-                        }else{
-                            cout << "Error 14: Price Must Be a Number.!" << endl;
+                    }
+                    else{
+                        cout << "Error 13 : Commas(',') are not allowed! Enter price again." << endl;
                     }
                 }
-                else{
-                    cout << "Error 13 : Commas(',') are not allowed!" << endl;
-                }
+                break;
+
             }
         }
         else{
@@ -256,7 +259,7 @@ bool DuplicateCheck(const string& add, const string& data_member){//条形码和
     return true;//未发现重复返回true
 }
 
-void Check(){
+void Check(){//单独写一个Check()让逻辑更清晰
     BarcodeCheck();
 }
 
@@ -293,8 +296,7 @@ void NameCheck(const string& Barcode){
             }
         }else{
             cout << "Error 19 : Commas(',') Are Not Allowed.Numbers Only." << endl;
-            cout << "Enter 'back' to Exit." << endl;
-            cout << "Please Try Again." << endl;
+            cout << "Enter 'back' to Exit,or enter name again" << endl;
         }
     }
     return;
@@ -326,7 +328,7 @@ void StockCheck(const string& Barcode, const string& Name, const string& Price){
         if(NumCheck(Stock)){
             cout << "Valid Input "<< endl;
             cout << "The New Product :" << endl;
-            cout << "name :" << Name << "  " << "barcode :" << Barcode << "  " << "price :" << Price << "  " << "stock :" << Stock << endl;
+            cout << "name :" << Name << "  " << "barcode:" << Barcode << "  " << "price:" << Price << "  " << "stock:" << Stock << endl;
             ofstream file("product.csv",ios::app);
             if (!file.is_open()) {
             cout << "Error 22: Record Failed" << endl;
@@ -363,12 +365,11 @@ void AdminCase4(){
                     file << product.name << ',' << product.barcode << ',' << product.price << ',' << product.stock << endl;
                 }
             }
-            cout << "Product Deleted Successfully." << endl << endl;
-            cout << "Enter 'back' to Exit." << endl;
-            cout << "Enter Barcode to Delete a Product." << endl;
+            cout << "Product Deleted Successfully." << endl;
+            cout << "Enter 'back' to Exit, or Enter Barcode to Delete a Product." << endl << endl;
         }else{
-            cout << "Error 15:Invalid input. Product Not Found." << endl;
-            cout << "Please Try Again." << endl;
+            cout << "Error 15:Invalid input. Product Not Found.Please Try Again." << endl;
+            cout << endl;
         }
     }
     Redirect();
@@ -385,7 +386,7 @@ bool PasswordDuplicateCheck(const string& input){
     return true;
 }
 
-void AdminCase5(){
+void AdminCase5(){//双层while嵌套，依次检验两次输入
     cout << "Enter the barcode of the product you want to restock." << endl;
     cout << "Enter 'back' to exit." << endl;
     string input;
@@ -450,8 +451,7 @@ void AdminCase6(){
             }
             break;   
         }else{
-            cout << "Error 26: Invalid Barcode. Product Not Found.You can try again or exit." << endl;
-            cout << "Enter 'back' to exit." << endl;
+            cout << "Error 26: Invalid Barcode. Product Not Found.You can try again or enter 'back' to exit." << endl;
         }
     }
     Redirect();

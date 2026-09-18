@@ -173,9 +173,9 @@ void AdminCase2(){//setprice
             }
             else{//找到商品了
                 string New;
+                cout << "Please Enter the New Price." << endl;
+                cout << "Note : Commas(',') Are Not Allowed.Numbers Only." << endl;
                 while(cin >> New && New != "back"){//不会输入空白
-                    cout << "Please Enter the New Price." << endl;
-                    cout << "Note : Commas(',') Are Not Allowed.Numbers Only." << endl;
                     if(New.find(',') == string::npos){//未发现逗号
                         if(PriceCheck(New)){//检测价格是否合理
                             for(auto& product : products){
@@ -189,6 +189,7 @@ void AdminCase2(){//setprice
                             Redirect();
                             cout << "Enter Barcode to Continue Editing (Numbers only)." << endl;
                             cout << "Enter 'back' to Return." << endl;
+                            break;
                             }else{
                                 cout << "Error 14: Price Must Be a Number! Enter price again." << endl;
                         }
@@ -198,7 +199,6 @@ void AdminCase2(){//setprice
                     }
                 }
                 break;
-
             }
         }
         else{
@@ -313,16 +313,16 @@ void NewPriceCheck(const string& Barcode, const string& Name){
             break;
         }else{
             cout << "Error 21:Invalid input!Numbers Only(eg.3.50)." << endl;
-            cout << "Enter 'back' to Exit." << endl;
             cout << "Please Try Again." << endl;
-        }
+            cout << "Enter 'back' to Exit." << endl;
+        }   
     }
     return;
 }
 
 void StockCheck(const string& Barcode, const string& Name, const string& Price){
     cout << "Enter the Stock of the New Product.Numbers Only(eg.10)." << endl;
-    cout << "Enter 'back' to Exit." << endl;
+    cout << "or You Can Enter 'back' to Exit." << endl;
     string Stock;
     while(cin >> Stock && Stock != "back"){
         if(NumCheck(Stock)){
@@ -338,8 +338,8 @@ void StockCheck(const string& Barcode, const string& Name, const string& Price){
             break;
         }else{
             cout << "Error 23:Invalid input." << endl;
-            cout << "Enter 'back' to Exit." << endl;
             cout << "Please Try Again." << endl;
+            cout << "or You Can Enter 'back' to Exit." << endl;
         }
     }
     return;

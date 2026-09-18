@@ -169,7 +169,7 @@ void AdminCase2(){//setprice
                 }
             }
             if(!judge){
-                cout << "Error 11:Cant't Find the Product!" << endl;
+                cout << "Error 11:Cant't Find the Product!Try again or you can quit." << endl;
             }
             else{//找到商品了
                 string New;
@@ -191,7 +191,7 @@ void AdminCase2(){//setprice
                             cout << "Enter 'back' to Return." << endl;
                             break;
                             }else{
-                                cout << "Error 14: Price Must Be a Number! Enter price again." << endl;
+                                cout << "Error 14: Price Must Be a Number! Enter price again or enter 'back' to quit." << endl;
                         }
                     }
                     else{
@@ -203,7 +203,7 @@ void AdminCase2(){//setprice
         }
         else{
             cout << "Error 18:Invalid input!" << endl; 
-            cout << "Try Again." << endl;
+            cout << "Try Again or Quit." << endl;
         }
     }
     Redirect();
@@ -272,7 +272,7 @@ void BarcodeCheck(){
                 NameCheck(Barcode);
                 break;
             }else{
-                cout << "Error 17: Barcode Already Exists.Please Try Again.";
+                cout << "Error 17: Barcode Already Exists.Please Try Again." << endl;
             }
         }else{
             cout << "Error 16: Numbers Only!" << endl;
@@ -296,7 +296,7 @@ void NameCheck(const string& Barcode){
             }
         }else{
             cout << "Error 19 : Commas(',') Are Not Allowed.Numbers Only." << endl;
-            cout << "Enter 'back' to Exit,or enter name again" << endl;
+            cout << "Enter 'back' to exit,or you can enter name again." << endl;
         }
     }
     return;
@@ -313,8 +313,7 @@ void NewPriceCheck(const string& Barcode, const string& Name){
             break;
         }else{
             cout << "Error 21:Invalid input!Numbers Only(eg.3.50)." << endl;
-            cout << "Please Try Again." << endl;
-            cout << "Enter 'back' to Exit." << endl;
+            cout << "Please try again, or you can enter 'back' to exit." << endl;
         }   
     }
     return;
@@ -429,7 +428,7 @@ void AdminCase6(){
     while(cin >> input && input != "back"){
         if(!DuplicateCheck(input, "barcode")){
             cout << "Enter the updated stock quantity for this product:" << endl;
-            cout << "Enter 'back' to exit." << endl;
+            cout << "Or you can enter 'back' to exit." << endl;
             string num;//update
             while(cin >> num && num != "back"){
                 if(NumCheck(num)){

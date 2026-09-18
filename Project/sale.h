@@ -9,3 +9,5 @@ int GetToday();
 void Case4(int day);
 
 void Case5();
+
+bool VIPcheck();

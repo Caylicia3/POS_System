@@ -15,7 +15,7 @@ void ShowProductInfo(const std::string& barcode);
 
 void Case1();
 
-void Case2(int date, int& num);
+void Case2(int date, int& num, const bool isVIP);
    
 void Checkout(std::string input2, int date, int& num);
 

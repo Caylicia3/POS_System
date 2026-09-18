@@ -8,6 +8,9 @@ void ShowMenu(int date,int num){
     cout << "Convenience Store POS Command-Line Interactive System" << endl;
     cout << "======================================================" << endl;
     cout << "Day: " << date << "   ---   " << "Current Receipt Number: " << num << endl << endl;
+    cout << "Special Promotion:" << endl;
+    cout << "- Spend 10 or more in a single transaction and get 2 off." << endl;
+    cout << "- Members enjoy 10% off storewide." << endl << endl;;
     cout << "Exit -- Please Enter 0" << endl;
     cout << "Show Product Information -- Please Enter 1" << endl;
     cout << "Checkout -- Please enter 2" << endl;
@@ -15,6 +18,7 @@ void ShowMenu(int date,int num){
     cout << "View All Sales Records and Total Revenue -- Please Enter 4" << endl;
     cout << "Clear All Sales Records -- Please Enter 5" << endl;//注意，库存不会被重置
     cout << "Enter Administrator Mode -- Please Enter 6" << endl;
+    cout << "Sales Report -- Please Enter 7" << endl;
 }
 
 void clearScreen() {

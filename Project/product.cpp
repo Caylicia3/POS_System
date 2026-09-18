@@ -10,6 +10,7 @@
 #include "admin.h"
 //#include <iomanip>
 using namespace std;
+const double discount = 2;
 
 vector<Product> CreateProduct(const string& filename){
     vector<Product> products;
@@ -122,7 +123,7 @@ void Case1(){
     ReturnMenu();
 }
 
-void Case2(int date, int& num){//重写版（v0.1.4以前的版本都是未重写的）重新拆分逻辑、使用stringstream修复输入bug、让运行逻辑更清晰
+void Case2(int date, int& num, const bool isVIP){//重写版（v0.1.4以前的版本都是未重写的）重新拆分逻辑、使用stringstream修复输入bug、让运行逻辑更清晰
     cout << "Enter barcodes to add items to the order. Each barcode adds 1 item (separated by spaces)." << endl;
     cout << "Enter 'exit' or 'quit' to quit." << endl;
     cout << "Enter barcode with a '-' prefix to decrease quantity by 1 (e.g., '-001').Multiple entries allowed. Separate with spaces." << endl;
@@ -202,6 +203,15 @@ void Case2(int date, int& num){//重写版（v0.1.4以前的版本都是未重�
                 if(checkEmpty1){
                     cout << "Cart is empty." << endl;
                 }else{
+                    if(total >= 10){
+                        cout << "Discount: -"  << discount << endl;
+                        total -= discount;
+                    }
+                    if(isVIP){
+                        cout << "MEMBERS: 10% OFF" << endl;
+                        cout << "Additional Discount: -" << total*0.1 << endl;//会员优惠在满减券之后结算
+                        total = total*0.9;
+                    }
                     cout << "Total: " << total << endl;
                 }
             }
@@ -228,7 +238,16 @@ void Case2(int date, int& num){//重写版（v0.1.4以前的版本都是未重�
                 if(checkEmpty2){
                     cout << "Cart is empty." << endl;
                 }else{
-                    cout << "Total: " << total << endl;
+                    if(total >= 10){
+                        cout << "Discount: -"  << discount << endl;
+                        total -= discount;
+                    }
+                    if(isVIP){
+                        cout << "MEMBERS: 10% OFF" << endl;
+                        cout << "Additional Discount: -" << total*0.1 << endl;//会员优惠在满减券之后结算
+                        total = total*0.9;
+                    }
+                    cout << "Total: " << total << endl;//折扣部分不再记录至product.csv
                     Record(date, num, products, total); //注意：若销售记录没有成功保存 但购物车仍然会被清空 且库存已经在加入购物车的时候减少（运行逻辑）
                     for(Product& product : products){
                         product.quantity = 0;

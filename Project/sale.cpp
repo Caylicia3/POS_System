@@ -242,3 +242,78 @@ void Case5(){
     }
     ReturnMenu();
 }
+
+bool VIPcheck(){
+    cout << "Are you a member of this store? Enter 1 if yes, 0 if no." << endl;
+    string VIP;
+    while(cin >> VIP){
+        if(VIP == "1"){
+            Redirect();
+            return true;
+        }
+        else if(VIP == "0"){
+            Redirect();
+            return false;
+        }
+        else{
+            cout << "Error 32 : Invalid Input." << endl;
+        }
+    }
+}
+
+void Case7(){
+    cout << "===== Sales Report =====" << endl;
+    ifstream file("sale.csv");
+    if (!file) {
+        cout << "Failed to open sale.csv." << endl;
+        return;
+    }
+    AmountReport(file);
+}
+
+void AmountReport(ifstream& file){//Date,number_of_sales/num,system_time,Receipt Items,total_sales_amount
+    string line, date, num, time, item;//注意：这里day和date含义相同，用day表示int类型，用date表示string类型
+    double total_amount = 0, daily_amount = 0, amount = 0, tmp2 = 0;//注意tmp2的数据类型
+    int day, cnt = 0, tmp1 = 0;//cnt用来记录day的变化，tmp1用来记录单日营业额最高的天数，tmp2用来记录单日最高营业额。
+    bool isEmpty = true;//检查是否有销售记录
+    getline(file, line);//去掉表头
+    while(getline(file, line)){
+        isEmpty = false;
+        stringstream ss(line);
+        getline(ss, date, ',');
+        getline(ss, num, ',');
+        getline(ss, time, ',');
+        getline(ss, item, ',');
+        ss >> amount;
+        day = stoi(date);
+        if(cnt == day){
+            daily_amount += amount;
+        }
+        if(cnt < day){//比较大小要用int类型，不能用stirng,因为string比较的是字典序，不是数值大小。//Record() 按销售发生时间追加,天数只能增加不能减少，所以sale.csv里的销售记录一定按照日期递增排列
+            if(cnt != 0){
+                cout << "Day: " << cnt << "     Daily Amount: " << daily_amount << endl;
+                if(daily_amount > tmp2){//这里就没有又把每日数据单独写进csv文件了，所以没有又用csv读取
+                    tmp1 = cnt;//bug:这里误写成day,但是day已经是下一天了
+                    tmp2 = daily_amount;
+                }
+                //total_amount += daily_amount;为避免最后出现如果最后一天有两个及以上订单和只有一个订单时最后的total_amount添加daily_amount的逻辑不一样，这里统一用amount去算total_amount。因为如果最后一天只有一单，那么循环结束后total_amount还需要再加一次daily_amount；但如果不是，就不需要再加。
+                daily_amount = amount;
+            }
+            cnt = day;
+        }
+        total_amount += amount;
+    }
+    cout << "Day: " << cnt << "     Daily Amount: " << daily_amount << endl;//如果不加的话，最后一天就不会输出这句（循环一定要注意初始和结束这两个地方）
+    if(daily_amount > tmp2){
+        tmp1 = cnt;
+        tmp2 = daily_amount;
+    }//bug:最后一天没有参与最高销售比较
+    if(isEmpty){//也可以不引入bool类型，直接用cnt==0来判断。此处为加强代码可读性所以没这么写
+        cout << "No sales records found." << endl;
+    }
+    else{
+        cout << "Total Amount: " << total_amount << endl;
+        cout << "Day with Highest Daily Sales: " << tmp1 << endl;
+        cout << "Sales on That Day: " << tmp2 << endl;
+    }
+}

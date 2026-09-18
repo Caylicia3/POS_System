@@ -35,7 +35,7 @@ int main(){
             }
             case 2:{
                 Redirect();
-                Case2(date, num);
+                Case2(date, num, VIPcheck());
                 break;
             }
             case 3:{
@@ -57,6 +57,11 @@ int main(){
             case 6:{
                 Redirect();
                 Case6();
+                break;
+            }
+            case 7:{
+                Redirect();
+                Case7();
                 break;
             }
             default:

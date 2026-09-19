@@ -5,6 +5,7 @@
 #include <cctype>
 #include <string>
 #include "admin.h"
+#include <vector>
 //#include <sstream>
 
 using namespace std;
@@ -66,7 +67,7 @@ void AdminMenu(){//const int& date, const int& num
         string line;
         getline(file,line);//line为当前存储的密码
         if(line == "admin123"){
-            cout << "Current: Default password" << endl;
+            cout << "Current: Default Password" << endl;
         }
         file.close();
         cout << "-------------------------------------------------------------------------" << endl;
@@ -337,8 +338,7 @@ void StockCheck(const string& Barcode, const string& Name, const string& Price){
             break;
         }else{
             cout << "Error 23:Invalid input." << endl;
-            cout << "Please Try Again." << endl;
-            cout << "or You Can Enter 'back' to Exit." << endl;
+            cout << "Please try again or you can enter 'back' to exit." << endl;
         }
     }
     return;
@@ -391,8 +391,7 @@ void AdminCase5(){//双层while嵌套，依次检验两次输入
     string input;
     while(cin >> input && input != "back"){
         if(!DuplicateCheck(input, "barcode")){
-            cout << "Enter quantity to restock:" << endl;
-            cout << "Enter 'back' to exit." << endl;
+            cout << "Enter quantity to restock, or you can still enter 'back' to exit." << endl;
             string num;//restock
             while(cin >> num && num != "back"){
                 if(NumCheck(num)){
@@ -427,7 +426,7 @@ void AdminCase6(){
     string input;
     while(cin >> input && input != "back"){
         if(!DuplicateCheck(input, "barcode")){
-            cout << "Enter the updated stock quantity for this product:" << endl;
+            cout << "Enter the updated stock quantity for this product." << endl;
             cout << "Or you can enter 'back' to exit." << endl;
             string num;//update
             while(cin >> num && num != "back"){

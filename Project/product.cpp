@@ -84,7 +84,7 @@ void ShowProductInfo(const string& barcode){
         }
     }else {
         if(valid){
-            cout << "Error 0: code not found" << endl;
+            cout << "Error 0: code not found.Try again or you can quit." << endl;
         }
     }
 }
@@ -208,8 +208,7 @@ void Case2(int date, int& num, const bool isVIP){//重写版（v0.1.4以前的�
                         total -= discount;
                     }
                     if(isVIP){
-                        cout << "MEMBERS: 10% OFF" << endl;
-                        cout << "Additional Discount: -" << total*0.1 << endl;//会员优惠在满减券之后结算
+                        cout << "MEMBERS: 10% OFF" << "   " << "Additional Discount: -" << total*0.1 << endl;//会员优惠在满减券之后结算
                         total = total*0.9;
                     }
                     cout << "Total: " << total << endl;
@@ -243,8 +242,7 @@ void Case2(int date, int& num, const bool isVIP){//重写版（v0.1.4以前的�
                         total -= discount;
                     }
                     if(isVIP){
-                        cout << "MEMBERS: 10% OFF" << endl;
-                        cout << "Additional Discount: -" << total*0.1 << endl;//会员优惠在满减券之后结算
+                        cout << "MEMBERS: 10% OFF" << "   " << "Additional Discount: -" << total*0.1 << endl;//会员优惠在满减券之后结算
                         total = total*0.9;
                     }
                     cout << "Total: " << total << endl;//折扣部分不再记录至product.csv

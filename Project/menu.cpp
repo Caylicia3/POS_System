@@ -10,7 +10,7 @@ void ShowMenu(int date,int num){
     cout << "Day: " << date << "   ---   " << "Current Receipt Number: " << num << endl << endl;
     cout << "Special Promotion:" << endl;
     cout << "- Spend 10 or more in a single transaction and get 2 off." << endl;
-    cout << "- Members enjoy 10% off storewide." << endl << endl;;
+    cout << "- Members enjoy 10% off storewide." << endl << endl;
     cout << "Exit -- Please Enter 0" << endl;
     cout << "Show Product Information -- Please Enter 1" << endl;
     cout << "Checkout -- Please enter 2" << endl;

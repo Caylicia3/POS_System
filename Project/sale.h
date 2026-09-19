@@ -11,3 +11,7 @@ void Case4(int day);
 void Case5();
 
 bool VIPcheck();
+
+void Case7();
+
+void AmountReport(std::ifstream& file);

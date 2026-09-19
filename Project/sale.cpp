@@ -8,6 +8,8 @@
 #include "product.h"
 #include <vector>
 #include <string>
+#include "sale.h"
+#include <sstream>
 
 using namespace std;
 
@@ -92,7 +94,7 @@ void Case3(int& date,int& num){
             break;
         }
         else{
-            cout << "Error 7:Invalid Input" << endl;
+            cout << "Error 7:Invalid Input.Try again or you can quit." << endl;
         }
     }
     ReturnMenu();
@@ -134,6 +136,9 @@ void Case4(int day){
                 cout << "------------------------" << endl;
                 double daily_sale = 0;
                 while(getline(file,date)){
+                    if(date.empty()){//加入空行检测，避免因为手动修改文件导致的空行影响程序正常运行
+                        continue;
+                    }
                     string  No, Time, Items, Ament;//把 No, Time, Items, Amcnt 都定义在 while (getline(...)) 循环里面，每次读取新行时它们都是全新的，不会被旧数据污染。
                     stringstream ss(date);
                     getline(ss,date,',');//这会消耗 ss 中已经读过的部分
@@ -256,9 +261,11 @@ bool VIPcheck(){
             return false;
         }
         else{
-            cout << "Error 32 : Invalid Input." << endl;
+            cout << "Error 32 : Invalid Input.Please enter '1' or '0'." << endl;
         }
     }
+    cout << "Error 33: Input Error" << endl;
+    return false;
 }
 
 void Case7(){
@@ -269,6 +276,12 @@ void Case7(){
         return;
     }
     AmountReport(file);
+    cout << "Enter 'quit' or 'exit' to quit." << endl;
+    string input;
+    while(cin >> input && input != "quit" && input != "exit"){
+        cout << "Error 34: Invalid Input." << endl;
+    }
+    ReturnMenu();
 }
 
 void AmountReport(ifstream& file){//Date,number_of_sales/num,system_time,Receipt Items,total_sales_amount

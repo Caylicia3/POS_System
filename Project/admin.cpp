@@ -187,9 +187,11 @@ void AdminCase2(){//setprice
                             }
                             RecreateProduct(products);//把更改后的商品信息填回去
                             cout << "Product Price Updated Successfully." << endl;
+                            /*
                             Redirect();
                             cout << "Enter Barcode to Continue Editing (Numbers only)." << endl;
                             cout << "Enter 'back' to Return." << endl;
+                            */
                             break;
                             }else{
                                 cout << "Error 14: Price Must Be a Number! Enter price again or enter 'back' to quit." << endl;
@@ -283,7 +285,7 @@ void BarcodeCheck(){
 }
 
 void NameCheck(const string& Barcode){
-    cout << "Enter the Name of the New Product.No Spaces Or Commas Allowed." << endl;
+    cout << "Enter the Name of the New Product.No Commas Allowed." << endl;
     cout << "Enter 'back' to Exit." << endl;
     string Name;
     while(cin >> Name && Name != "back"){

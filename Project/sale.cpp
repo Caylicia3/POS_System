@@ -117,11 +117,11 @@ int GetToday(){
     return max_date;
 }
 
-void Case4(int day){
+void Case4(const int day){//注意：该函数内的date和day和函数外的略有区别，因为变量太多不好命名
     cout << "View All Sales Records and Total Revenue" << endl;
     //Sales Records
     //Total Sales
-    cout << "Enter 'sales[day]' to View All Sales Records and Total Revenue (eg.'sales 1')" << endl;
+    cout << "Enter 'sales[day]' to view sales records for selected day and total revenue (eg.'sales 1')" << endl;
     cout << "If the day parameter is omitted, it defaults to today." << endl;
     cout << "Enter 'exit' or 'quit' to quit." << endl;
     cout << "Enter 'all' to display all records." << endl;
@@ -161,11 +161,12 @@ void Case4(int day){
                     if(input.empty()){
                         cout << "Error 9:Invalid input" << endl;
                     }else{
-                        day = stoi(input);
+                        int tmp;
+                        tmp = stoi(input);//为避免直接修改day,引入变量tmp
                         ifstream file("sale.csv");
                         string date, No, Time, Items, Ament;
                         getline(file,date);
-                        cout << "Day: " << day << endl;
+                        cout << "Day: " << tmp << endl;
                         cout << "------------------------" << endl;
                         double daily_sale = 0;
                         while(getline(file,date)){
@@ -175,7 +176,7 @@ void Case4(int day){
                             getline(ss,Time,',');
                             getline(ss,Items,',');
                             ss >> Ament;
-                            if(stoi(date) == day){//注意：这里的date和day和函数外的略有区别，因为变量太多不好命名
+                            if(stoi(date) == tmp){
                                 cout << "No." << No << " Time:" << Time << " Items:" << Items << " Ament:" << Ament << endl;
                                 daily_sale+=stod(Ament);
                             }
@@ -239,6 +240,7 @@ void Case5(){
             ofstream file("sale.csv");
             file << "Date,number_of_sales/num,system_time,Receipt Items,total_sales_amount" << endl;
             file.close();
+            cout << "Operation Successful!" << endl;
             break;
         }
         else{

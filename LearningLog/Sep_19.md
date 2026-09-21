@@ -75,8 +75,12 @@ while(true){
         continue;
     }
 
-- **坑**：
+- **坑**：git推送到远端仓库的commit和tag是分开的，建议先推送commit后再推送tag
   - **解决**：
+  git commit -m "release: v0.1.5"
+  git tag -a v0.1.5 -m "First stable release"
+  git push
+  git push origin --tags  或   git push origin v0.1.5
 - **坑**：
   - **解决**：
 - **坑**：
@@ -86,7 +90,7 @@ while(true){
 - **坑**：
   - **解决**：
 ## 今日学到的命令
-- 
+- git ls-remote --tags origin查看远端仓库所有tag
 - 
 
 ## 待办

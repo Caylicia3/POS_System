@@ -115,7 +115,7 @@ bool Judge(string& line1, string& line2, string& line3, const string& barcode, b
 void Case1(){
     cout << "Please enter the barcode of the product you want to check: " << endl;
     cout << "(Enter 'exit' or 'quit' to quit)" << endl;
-    cout << "If you want to check all products, please enter 'prices'" << endl;
+    cout << "If you want to check all products, please enter 'prices'." << endl;
     string input2;
     while(cin >> input2 && input2 != "exit" && input2 != "quit"){
             ShowProductInfo(input2);
@@ -130,7 +130,7 @@ void Case2(int date, int& num, const bool isVIP){//重写版（v0.1.4以前的�
     cout << "Enter 'print' to print the current receipt (items, quantities, prices, and total)." << endl;
     cout << "Enter 'drop' to clear the order and restart." << endl;
     cout << "Enter 'checkout' to finalize the order, print the receipt, and clear the order." << endl;
-    cout << "-----------------------------------------------------------------------------------------------------------------------------" << endl;
+    cout << "------------------------------------------------------------------------------------------------------------------------" << endl;
     cout << "Please enter your command: ";//stringstream 支持同时处理多个输入（eg. 001 006 002 -001 print 002 drop 003 checkout)
     string input2;
     vector<Product> products = CreateProduct("product.csv");

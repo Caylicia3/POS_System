@@ -10,6 +10,7 @@
 #include <string>
 #include "sale.h"
 #include <sstream>
+#include "admin.h"
 
 using namespace std;
 
@@ -162,27 +163,32 @@ void Case4(const int day){//注意：该函数内的date和day和函数外的略
                         cout << "Error 9:Invalid input" << endl;
                     }else{
                         int tmp;
-                        tmp = stoi(input);//为避免直接修改day,引入变量tmp
-                        ifstream file("sale.csv");
-                        string date, No, Time, Items, Ament;
-                        getline(file,date);
-                        cout << "Day: " << tmp << endl;
-                        cout << "------------------------" << endl;
-                        double daily_sale = 0;
-                        while(getline(file,date)){
-                            stringstream ss(date);
-                            getline(ss,date,',');//这会消耗 ss 中已经读过的部分
-                            getline(ss,No,',');
-                            getline(ss,Time,',');
-                            getline(ss,Items,',');
-                            ss >> Ament;
-                            if(stoi(date) == tmp){
-                                cout << "No." << No << " Time:" << Time << " Items:" << Items << " Ament:" << Ament << endl;
-                                daily_sale+=stod(Ament);
+                        if(NumCheck(input)){
+                            tmp = stoi(input);//为避免直接修改day,引入变量tmp
+                            ifstream file("sale.csv");
+                            string date, No, Time, Items, Ament;
+                            getline(file,date);
+                            cout << "Day: " << tmp << endl;
+                            cout << "------------------------" << endl;
+                            double daily_sale = 0;
+                            while(getline(file,date)){
+                                stringstream ss(date);
+                                getline(ss,date,',');//这会消耗 ss 中已经读过的部分
+                                getline(ss,No,',');
+                                getline(ss,Time,',');
+                                getline(ss,Items,',');
+                                ss >> Ament;
+                                if(stoi(date) == tmp){
+                                    cout << "No." << No << " Time:" << Time << " Items:" << Items << " Ament:" << Ament << endl;
+                                    daily_sale+=stod(Ament);
+                                }
                             }
+                            cout << "------------------------" << endl;
+                            cout << "Daily: " << daily_sale << endl;
+                        }else{
+                            cout << "Error 35:Invalid input" << endl;
                         }
-                        cout << "------------------------" << endl;
-                        cout << "Daily: " << daily_sale << endl;
+
                     }
                 }else{
                     cout << "Error 6:Invalid input" << endl;
@@ -315,7 +321,7 @@ void AmountReport(ifstream& file){//Date,number_of_sales/num,system_time,Receipt
                 daily_amount = amount;
             }
             cnt = day;
-        }
+        }//因为本项目里天数只能增加，不可能减少，所以没有cnt > day的情况
         total_amount += amount;
     }
     cout << "Day: " << cnt << "     Daily Amount: " << daily_amount << endl;//如果不加的话，最后一天就不会输出这句（循环一定要注意初始和结束这两个地方）

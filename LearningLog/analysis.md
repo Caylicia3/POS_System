@@ -313,7 +313,36 @@ size() = “里面有多少个字符？”
 ### void AdminCase3()
 
 ### bool DuplicateCheck(const string& add, const string& data_member)
-条形码查重（也可用于检测条形码输入是否有效）
+条形码/名字查重（也可反向用于检测条形码/名字输入是否有效）
 for范围循环遍历。
 
 ### void Check()
+
+### void BarcodeCheck()
+通过数字检测和条形码查重检测是否是有效输入。（数字检测其实都可以不用，因为条形码查重这一步如果是非数字也通过不了）
+
+### void NameCheck(const string& Barcode)
+检测是否有逗号+名字查重
+
+### void NewPriceCheck(const string& Barcode, const string& Name)
+检测价格是否合理（通过PriceCheck函数）
+
+### void StockCheck(const string& Barcode, const string& Name, const string& Price)
+库存检测，检测库存是否为有效数字（正整数）。
+
+### void AdminCase4()
+使用for范围循环判断条形码是否有效。（这部分也可以直接用DuplicateCheck函数，当时写的时候忘记了）
+使用ofstream file("product.csv");打开并清空所有内容，重新回填（除了要删除的内容），以达到删除商品的效果。
+
+### bool PasswordDuplicateCheck(const string& input)
+密码查重检测（打开文件读取原密码并与新密码进行查重判断）
+
+### void AdminCase5()
+双层while嵌套，依次检验两次输入
+
+### void AdminCase6()
+类似AdminCase5。
+
+### void AdminCase7()
+实时生成动态数组。
+

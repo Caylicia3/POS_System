@@ -199,3 +199,121 @@ for (const Product& product : products)意思是：用引用访问原来的元�
  - 当处理完一行的输入后再判断（record）是否需要输出添加商品后的购物车内的信息。
 
 ## sale.cpp
+### void Record(int date,int& num,const vector<Product>& products,double total)
+记录结账记录的函数
+- ofstream file("sale.csv",ios::app);ios::app：(append)追加写入——每次写入内容时，都写到文件末尾，不覆盖原来的内容。
+如果直接写ofstream file("sale.csv");默认通常是清空已有内容后重新写。
+- file << date;可以直接使用<<写入。
+往csv文件里输入','便于后续内容的读取。
+- 
+auto now = chrono::system_clock::now();
+ - 目的：获取电脑当前的本地时间，并把它按照 小时:分钟:秒 的格式写入 sale.csv。
+ - 拆解：system_clock可以理解成：系统时钟。也就是电脑当前的时间。::now()意思：获取现在这一刻。
+- 
+time_t currentTime = chrono::system_clock::to_time_t(now);
+ - 目的：把时间点转换成 time_t。
+ 刚才得到的：now，是 C++ chrono 体系中的一个“时间点”。但是：localtime()这种传统 C/C++ 时间函数并不能直接读取。所以把它转换成：time_t
+ - to_time_t(now)可以理解成：把 now 转换成 time_t。
+ - 含义（理解）：把刚才获得的当前时间点转换成传统的 time_t 时间格式，并保存到 currentTime。
+- 
+file << "," << put_time(localtime(&currentTime), "%H:%M:%S") << ",";
+ - localtime(&currentTime)//把 currentTime 的地址传给 localtime。（&为取址符）
+ - localtime()可简单理解为:把 currentTime 转成本地时间结构。（这个“时间信息”里面会包含：年月日时分秒...）
+ - put_time(..., "%H:%M:%S")的作用是：按照指定格式，把时间格式化成字符串一样的输出内容。
+ - %H:%M:%S 是时间格式：
+ %H→小时
+ %M→分钟
+ %S→秒
+ 中间的：`:`就是普通的冒号。
+ - file << ...：把内容写进 sale.csv。
+ - 总结：
+① 获取电脑当前时间
+        ↓
+② 转换成 time_t
+        ↓
+③ 转成本地时间
+        ↓
+④ 按 时:分:秒 的格式格式化
+        ↓
+⑤ 写入 sale.csv
+
+### int GetToday()
+通过销售记录输出今天的天数
+（如果想要真的只要执行了Day + 1就进入下一天，哪怕没结帐，重启后依然保留天数，可以重新建一个csv文件保存息。）
+- 逻辑：不断输入销售记录中的天数，将记录中出现的最大天数保存下来，当做最终·算出的天数输出。
+
+### int GetTodayNum(int date)
+通过天数和销售记录记录流水号。读取到最大数字后再输出最大值+1。
+
+### void Case3(int& date,int& num)
+通过引用直接修改日期和流水号。
+
+### void Case4(const int day)
+因为输入中会有空格，所以通过getline读取一排，再统一处理。
+
+### void Case5()
+- ofstream file("sale.csv");会清空文件。
+- file << "Date,number_of_sales/num,system_time,Receipt Items,total_sales_amount" << endl;填入表头
+
+### bool VIPcheck()
+判断是否是会员。
+
+### void Case7()
+直接打印销售记录和营业额统计结果。
+
+### void AmountReport(ifstream& file)
+通过cnt判断是否为同一天的销售记录，在统计同一天的销售记录的同时，记录最高营业额是多少。
+
+## admin.cpp
+### void Case6()
+输入密码进入管理员模式
+
+### bool VerifyPassword()
+判断密码是否正确（三次机会）。
+
+### void AdminMenu()
+进入管理员模式菜单。
+
+### void AdminCase1()
+
+### void AdminCase2()
+
+### bool NumCheck(string input)
+- input.empty()判断 input 这个字符串是不是空的。返回一个 bool：若input为空字符串则返回true,若是其他（包含只有空格的情况）会返回false。（空字符串和只有空格不是一回事。）
+输入安全检测。
+ - 补充：input.size() == 0
+在判断字符串是否为空时，效果基本一样。empty() 表达得更直接。
+empty() = “里面有没有东西？”
+size() = “里面有多少个字符？”
+- for(char c : input){
+    if(!isdigit(c))
+      return false;
+  }
+  - for(char c : input):把 input 里的每一个字符依次取出来，每次都叫它 c。
+  - isdigit() 是 C++ 提供的一个判断字符是不是数字的函数。isdigit(c)意思：判断 c 是不是数字字符 '0' ~ '9'。返回 bool：是数字字符，返回true,如果不是，返回false。
+  - ! 是“取反”：把 true 变成 false，把 false 变成 true。
+  - 注意：input是string类型，里面的每一个元素是字符char类型，而不是string类型。
+  - 总结：该函数逐一检测字符串的每一位是不是数字字符。（该函数逐一检测字符串的每一位是不是数字字符。通过检测后，对于正常范围内的纯数字字符串，可以进一步使用 stoi() 将其转换为 int。）
+
+### void RecreateProduct(const vector<Product>& products)
+重新填回商品信息。
+
+### bool PriceCheck(string input)
+检查一个字符串能不能完整地表示一个数字，包括小数（不包括负数），和NumCheck区分。
+- try{
+    ...
+}你可以暂时把它理解成：尝试执行这一段代码，如果里面发生异常，就交给后面的 catch 处理。因为后面：stod(input, &pos);可能因为输入不是合法数字而产生异常。
+- size_t pos;这里定义了一个变量：专门用来记录 stod() 解析到了字符串的什么位置。
+- stod(input, &pos);stod：string → double也就是把字符串转换成 double。&pos它的作用是：告诉 stod：把“解析到哪里了”这个位置记录到 pos 中。
+ - pos的作用：检查整个字符串是不是都被成功解析成了数字。而不是只检查：字符串开头有没有一部分是数字。（因为如果字符串只有开头是数字也能解析出来）
+- catch(...){
+    return false;
+}这里的：...表示：捕获任意类型的异常。
+
+### void AdminCase3()
+
+### bool DuplicateCheck(const string& add, const string& data_member)
+条形码查重（也可用于检测条形码输入是否有效）
+for范围循环遍历。
+
+### void Check()

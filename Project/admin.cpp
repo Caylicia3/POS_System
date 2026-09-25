@@ -351,7 +351,7 @@ void AdminCase4(){
     cout << "Enter Barcode to Delete a Product." << endl;
     string Barcode;
     while(cin >> Barcode && Barcode != "back"){
-        vector<Product> products = CreateProduct("product.csv");
+        vector<Product> products = CreateProduct("product.csv");//每一次循环都需要重新创建结构体数组，这样才能及时更新信息
         bool Valid = false;
         for(const auto& product : products){//无需检验是不是数字，因为如果不是数字根本不会匹配得上
             if(product.barcode == Barcode){
